@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeeksforGeeks | DS Practicals</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <!-- Prism.js for Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary-color: #2f8d46;
+            --primary-hover: #216d35;
+            --bg-dark: #0f1111;
+            --bg-card: #1c1e1e;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --border-color: #333333;
+            --glass-bg: rgba(28, 30, 30, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- Login Overlay --- */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: 12px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .login-card h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: #2a2c2c;
+            color: white;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 6px;
+            border: none;
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-card button:hover {
+            background: var(--primary-hover);
+        }
+
+        .error-msg {
+            color: #ff4d4d;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        /* --- Main Content --- */
+        #main-container {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        header {
+            padding: 1rem 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            background: #151717;
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 70px);
+        }
+
+        .sidebar h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .nav-btn {
+            width: 100%;
+            text-align: left;
+            padding: 0.8rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        .nav-btn.active {
+            background: rgba(47, 141, 70, 0.15);
+            color: var(--primary-color);
+            border: 1px solid rgba(47, 141, 70, 0.3);
+        }
+
+        /* --- Content Area --- */
+        .content-area {
+            padding: 2.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .exp-header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+
+        .exp-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .exp-aim {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .code-container {
+            position: relative;
+            background: #1d1f21;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .code-header {
+            padding: 0.8rem 1.5rem;
+            background: #25282a;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-lang {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .copy-btn.copied {
+            color: var(--primary-color);
+        }
+
+        pre[class*="language-"] {
+            margin: 0 !important;
+            padding: 1.5rem !important;
+            font-family: 'JetBrains Mono', monospace !important;
+            font-size: 0.95rem !important;
+            background: #1d1f21 !important;
+        }
+
+        /* --- Custom Scrollbar --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Overlay -->
+    <div id="login-overlay">
+        <div class="login-card">
+            <h2>GeeksforGeeks</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Secure Access Required</p>
+            <input type="password" id="passcode" placeholder="Enter Access Code" autofocus onkeydown="if(event.key === 'Enter') checkLogin()">
+            <button onclick="checkLogin()">Unlock Practical Box</button>
+            <div id="error-msg" class="error-msg">Invalid Access Code. Try again.</div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="main-container">
+        <header>
+            <div class="logo">
+                <i data-lucide="code-2"></i>
+                GeeksforGeeks
+            </div>
+            <div style="font-size: 0.9rem; color: var(--text-muted)">
+                Data Structures Practicals
+            </div>
+        </header>
+
+        <div class="layout">
+            <aside class="sidebar">
+                <h3>Experiments</h3>
+                <div id="nav-list"></div>
+            </aside>
+
+            <main class="content-area">
+                <div id="experiment-content">
+                    <div class="exp-header">
+                        <h1 class="exp-title" id="display-title">Experiment 1</h1>
+                        <p class="exp-aim" id="display-aim">Loading...</p>
+                    </div>
+
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-lang">main.c</span>
+                            <button class="copy-btn" onclick="copyCode()" id="copy-btn">
+                                <i data-lucide="copy" size="16"></i>
+                                <span>Copy Code</span>
+                            </button>
+                        </div>
+                        <pre><code class="language-c" id="display-code"></code></pre>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <script>
+        // Data populated from the files
+        const experiments = [
+  {
+    "id": 1,
+    "title": "Experiment 1",
+    "aim": "Implementation of insertion and deletion in a specific position",
+    "code": "#include <stdio.h>\n#define MAX 5\nvoid insert(int *arr, int pos, int num);\nvoid del(int *arr, int pos);\nvoid display(int *arr);\nvoid insert(int *arr, int pos, int num)\n{\n    int i;\n    for (i = MAX - 1; i >= pos; i--)\n        arr[i] = arr[i - 1];\n    arr[pos - 1] = num;\n}\nvoid del(int *arr, int pos)\n{\n    int i;\n    for (i = pos; i < MAX; i++)\n        arr[i - 1] = arr[i];\n    arr[MAX - 1] = 0;\n}\nvoid display(int *arr)\n{\n    int i;\n    printf(\"\\n\");\n    for (i = 0; i < MAX; i++)\n        printf(\"%d\\t\", arr[i]);\n    printf(\"\\n\");\n}\nint main()\n{\n    int arr[MAX];\n    insert(arr, 1, 11);\n    insert(arr, 2, 12);\n    insert(arr, 3, 13);\n    insert(arr, 4, 14);\n    insert(arr, 5, 15);\n    printf(\"Elements of Array after insertion:\");\n    display(arr);\n    del(arr, 5);\n    del(arr, 2);\n    printf(\"\\nArray after deletion:\");\n    display(arr);\n    return 0;\n}"
+  },
+  {
+    "id": 2,
+    "title": "Experiment 2",
+    "aim": "Program to reverse a string using Stack as ADT.",
+    "code": "#include <stdio.h>\n#include <string.h>\n#define MAX 100\nchar stack[MAX];\nint top = -1;\nvoid push(char ch)\n{\n    if (top == MAX - 1)\n    {\n        printf(\"Stack Overflow!\\n\");\n        return;\n    }\n    stack[++top] = ch;\n}\nchar pop()\n{\n    if (top == -1)\n    {\n        printf(\"Stack Underflow!\\n\");\n        return '\\0';\n    }\n    return stack[top--];\n}\nint isEmpty()\n{\n    return (top == -1);\n}\nvoid reverseString(char *str)\n{\n    int i;\n    int len = strlen(str);\n    for (i = 0; i < len; i++)\n        push(str[i]);\n    for (i = 0; i < len; i++)\n        str[i] = pop();\n}\nint main()\n{\n    char str[MAX];\n    printf(\"Enter a string to reverse: \");\n    fgets(str, sizeof(str), stdin);\n    int len = strlen(str);\n    if (str[len - 1] == '\\n')\n        str[len - 1] = '\\0';\n    printf(\"Original string  : %s\\n\", str);\n    reverseString(str);\n    printf(\"Reversed string  : %s\\n\", str);\n    return 0;\n}"
+  },
+  {
+    "id": 3,
+    "title": "Experiment 3",
+    "aim": "Array implementation of Stack and its operations.",
+    "code": "#include <stdio.h>\n#define SIZE 5\nint stack[SIZE];\nint top = -1;\nvoid push(int value)\n{\n    if (top == SIZE - 1)\n    {\n        printf(\"Stack is FULL! Insertion not possible.\\n\");\n        return;\n    }\n    top++;\n    stack[top] = value;\n    printf(\"Pushed %d onto the stack.\\n\", value);\n}\nvoid pop()\n{\n    if (top == -1)\n    {\n        printf(\"Stack is EMPTY! Deletion not possible.\\n\");\n        return;\n    }\n    printf(\"Popped %d from the stack.\\n\", stack[top]);\n    top--;\n}\nvoid display()\n{\n    int i;\n    if (top == -1)\n    {\n        printf(\"Stack is EMPTY!\\n\");\n        return;\n    }\n    printf(\"Stack elements (top to bottom): \");\n    for (i = top; i >= 0; i--)\n        printf(\"%d  \", stack[i]);\n    printf(\"\\n\");\n}\nint main()\n{\n    int choice, value;\n    do {\n        printf(\"\\n===== Stack Menu =====\\n\");\n        printf(\"1. Push\\n\");\n        printf(\"2. Pop\\n\");\n        printf(\"3. Display\\n\");\n        printf(\"4. Exit\\n\");\n        printf(\"Enter your choice: \");\n        scanf(\"%d\", &choice);\n        switch (choice)\n        {\n            case 1:\n                printf(\"Enter value to push: \");\n                scanf(\"%d\", &value);\n                push(value);\n                break;\n            case 2:\n                pop();\n                break;\n            case 3:\n                display();\n                break;\n            case 4:\n                printf(\"Exiting...\\n\");\n                break;\n            default:\n                printf(\"Invalid choice! Please try again.\\n\");\n        }\n    } while (choice != 4);\n    return 0;\n}"
+  },
+  {
+    "id": 4,
+    "title": "Experiment 4",
+    "aim": "Evaluate a Postfix Expression using Stack ADT.",
+    "code": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <ctype.h>\n#define MAX 100\nint stack[MAX];\nint top = -1;\nvoid push(int value)\n{\n    if (top == MAX - 1)\n    {\n        printf(\"Stack Overflow!\\n\");\n        exit(1);\n    }\n    stack[++top] = value;\n}\nint pop()\n{\n    if (top == -1)\n    {\n        printf(\"Stack Underflow! Invalid postfix expression.\\n\");\n        exit(1);\n    }\n    return stack[top--];\n}\nint evaluatePostfix(char *expr)\n{\n    int i;\n    int operand1, operand2, result;\n    char token[10];\n    int idx = 0;\n    int num;\n    for (i = 0; expr[i] != '\\0'; i++)\n    {\n        char ch = expr[i];\n        if (ch == ' ' || ch == '\\t')\n            continue;\n        if (isdigit(ch))\n        {\n            num = 0;\n            while (i < (int)strlen(expr) && isdigit(expr[i]))\n            {\n                num = num * 10 + (expr[i] - '0');\n                i++;\n            }\n            i--; \n            push(num);\n        }\n        else if (ch == '+' || ch == '-' || ch == '*' || ch == '/')\n        {\n            operand2 = pop(); \n            operand1 = pop(); \n            switch (ch)\n            {\n                case '+': result = operand1 + operand2; break;\n                case '-': result = operand1 - operand2; break;\n                case '*': result = operand1 * operand2; break;\n                case '/':\n                    if (operand2 == 0)\n                    {\n                        printf(\"Error: Division by zero!\\n\");\n                        exit(1);\n                    }\n                    result = operand1 / operand2;\n                    break;\n                default:\n                    printf(\"Unknown operator: %c\\n\", ch);\n                    exit(1);\n            }\n            push(result);\n        }\n        else\n        {\n            printf(\"Invalid character '%c' in expression.\\n\", ch);\n            exit(1);\n        }\n    }\n    return pop();\n}\nint main()\n{\n    char expr[MAX];\n    printf(\"Enter a postfix expression (e.g., 5 3 + 2 * ): \");\n    fgets(expr, sizeof(expr), stdin);\n    int len = strlen(expr);\n    if (expr[len - 1] == '\\n')\n        expr[len - 1] = '\\0';\n    printf(\"Postfix Expression : %s\\n\", expr);\n    printf(\"Evaluated Result   : %d\\n\", evaluatePostfix(expr));\n    return 0;\n}"
+  },
+  {
+    "id": 5,
+    "title": "Experiment 5",
+    "aim": "Array implementation of Queue and its operations.",
+    "code": "#include <stdio.h>\n#define SIZE 5\nint queue[SIZE];\nint front = -1;\nint rear  = -1;\nvoid enQueue(int value)\n{\n    if (rear == SIZE - 1)\n    {\n        printf(\"Queue is FULL! Insertion not possible.\\n\");\n        return;\n    }\n    if (front == -1)\n        front = 0; \n    rear++;\n    queue[rear] = value;\n    printf(\"Inserted %d into the queue.\\n\", value);\n}\nvoid deQueue()\n{\n    if (front == -1 || front > rear)\n    {\n        printf(\"Queue is EMPTY! Deletion not possible.\\n\");\n        front = rear = -1;\n        return;\n    }\n    printf(\"Deleted %d from the queue.\\n\", queue[front]);\n    front++;\n    if (front > rear)\n        front = rear = -1;\n}\nvoid display()\n{\n    int i;\n    if (front == -1 || front > rear)\n    {\n        printf(\"Queue is EMPTY!\\n\");\n        return;\n    }\n    printf(\"Queue elements (front to rear): \");\n    for (i = front; i <= rear; i++)\n        printf(\"%d  \", queue[i]);\n    printf(\"\\n\");\n}\nint main()\n{\n    int choice, value;\n    do {\n        printf(\"\\n===== Queue Menu =====\\n\");\n        printf(\"1. enQueue (Insert)\\n\");\n        printf(\"2. deQueue (Delete)\\n\");\n        printf(\"3. Display\\n\");\n        printf(\"4. Exit\\n\");\n        printf(\"Enter your choice: \");\n        scanf(\"%d\", &choice);\n        switch (choice)\n        {\n            case 1:\n                printf(\"Enter value to insert: \");\n                scanf(\"%d\", &value);\n                enQueue(value);\n                break;\n            case 2:\n                deQueue();\n                break;\n            case 3:\n                display();\n                break;\n            case 4:\n                printf(\"Exiting...\\n\");\n                break;\n            default:\n                printf(\"Invalid choice! Please try again.\\n\");\n        }\n    } while (choice != 4);\n    return 0;\n}"
+  },
+  {
+    "id": 6,
+    "title": "Experiment 6",
+    "aim": "Write a program that uses functions to perform the following",
+    "code": "#include <stdio.h>\n#include <stdlib.h>\nstruct Node\n{\n    int data;\n    struct Node *next;\n};\nstruct Node *head = NULL;\nstruct Node *createNode(int value)\n{\n    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));\n    if (!newNode)\n    {\n        printf(\"Memory allocation failed!\\n\");\n        exit(1);\n    }\n    newNode->data = value;\n    newNode->next = NULL;\n    return newNode;\n}\nvoid insertAtBeginning(int value)\n{\n    struct Node *newNode = createNode(value);\n    if (head == NULL)\n    {\n        head = newNode;\n    }\n    else\n    {\n        newNode->next = head;\n        head = newNode;\n    }\n    printf(\"Inserted %d at the beginning.\\n\", value);\n}\nvoid insertAtEnd(int value)\n{\n    struct Node *newNode = createNode(value);\n    if (head == NULL)\n    {\n        head = newNode;\n    }\n    else\n    {\n        struct Node *temp = head;\n        while (temp->next != NULL)\n            temp = temp->next;\n        temp->next = newNode;\n    }\n    printf(\"Inserted %d at the end.\\n\", value);\n}\nvoid insertAtPosition(int value, int pos)\n{\n    if (pos < 1)\n    {\n        printf(\"Invalid position!\\n\");\n        return;\n    }\n    if (pos == 1)\n    {\n        insertAtBeginning(value);\n        return;\n    }\n    struct Node *newNode = createNode(value);\n    struct Node *temp = head;\n    int i;\n    for (i = 1; i < pos - 1 && temp != NULL; i++)\n        temp = temp->next;\n    if (temp == NULL)\n    {\n        printf(\"Position out of range!\\n\");\n        free(newNode);\n        return;\n    }\n    newNode->next = temp->next;\n    temp->next = newNode;\n    printf(\"Inserted %d at position %d.\\n\", value, pos);\n}\nvoid deleteFromBeginning()\n{\n    if (head == NULL)\n    {\n        printf(\"List is Empty! Deletion not possible.\\n\");\n        return;\n    }\n    struct Node *temp = head;\n    printf(\"Deleted %d from the beginning.\\n\", temp->data);\n    head = head->next;\n    free(temp);\n}\nvoid deleteFromEnd()\n{\n    if (head == NULL)\n    {\n        printf(\"List is Empty! Deletion not possible.\\n\");\n        return;\n    }\n    struct Node *temp = head;\n    if (temp->next == NULL)\n    {\n        printf(\"Deleted %d from the end.\\n\", temp->data);\n        head = NULL;\n        free(temp);\n        return;\n    }\n    struct Node *prev = NULL;\n    while (temp->next != NULL)\n    {\n        prev = temp;\n        temp = temp->next;\n    }\n    printf(\"Deleted %d from the end.\\n\", temp->data);\n    prev->next = NULL;\n    free(temp);\n}\nvoid deleteSpecific(int value)\n{\n    if (head == NULL)\n    {\n        printf(\"List is Empty! Deletion not possible.\\n\");\n        return;\n    }\n    struct Node *temp = head;\n    struct Node *prev = NULL;\n    while (temp != NULL && temp->data != value)\n    {\n        prev = temp;\n        temp = temp->next;\n    }\n    if (temp == NULL)\n    {\n        printf(\"Node with value %d not found!\\n\", value);\n        return;\n    }\n    if (prev == NULL)\n        head = temp->next; \n    else\n        prev->next = temp->next;\n    printf(\"Deleted node with value %d.\\n\", value);\n    free(temp);\n}\nvoid display()\n{\n    if (head == NULL)\n    {\n        printf(\"List is EMPTY!\\n\");\n        return;\n    }\n    struct Node *temp = head;\n    printf(\"List: \");\n    while (temp != NULL)\n    {\n        printf(\"%d ---> \", temp->data);\n        temp = temp->next;\n    }\n    printf(\"NULL\\n\");\n}\nint main()\n{\n    int choice, value, pos;\n    do {\n        printf(\"\\n===== Singly Linked List Menu =====\\n\");\n        printf(\"1. Insert at Beginning\\n\");\n        printf(\"2. Insert at End\\n\");\n        printf(\"3. Insert at Position\\n\");\n        printf(\"4. Delete from Beginning\\n\");\n        printf(\"5. Delete from End\\n\");\n        printf(\"6. Delete a Specific Node\\n\");\n        printf(\"7. Display (Traverse)\\n\");\n        printf(\"8. Exit\\n\");\n        printf(\"Enter your choice: \");\n        scanf(\"%d\", &choice);\n        switch (choice)\n        {\n            case 1:\n                printf(\"Enter value: \");\n                scanf(\"%d\", &value);\n                insertAtBeginning(value);\n                break;\n            case 2:\n                printf(\"Enter value: \");\n                scanf(\"%d\", &value);\n                insertAtEnd(value);\n                break;\n            case 3:\n                printf(\"Enter value: \");\n                scanf(\"%d\", &value);\n                printf(\"Enter position: \");\n                scanf(\"%d\", &pos);\n                insertAtPosition(value, pos);\n                break;\n            case 4:\n                deleteFromBeginning();\n                break;\n            case 5:\n                deleteFromEnd();\n                break;\n            case 6:\n                printf(\"Enter value to delete: \");\n                scanf(\"%d\", &value);\n                deleteSpecific(value);\n                break;\n            case 7:\n                display();\n                break;\n            case 8:\n                printf(\"Exiting...\\n\");\n                break;\n            default:\n                printf(\"Invalid choice!\\n\");\n        }\n    } while (choice != 8);\n    return 0;\n}"
+  },
+  {
+    "id": 7,
+    "title": "Experiment 7",
+    "aim": "Write a program to implement Stack using Linked List.",
+    "code": "#include <stdio.h>\n#include <stdlib.h>\nstruct Node\n{\n    int data;\n    struct Node *next;\n};\nstruct Node *top = NULL;\nvoid push(int value)\n{\n    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));\n    if (!newNode)\n    {\n        printf(\"Memory allocation failed!\\n\");\n        return;\n    }\n    newNode->data = value;\n    if (top == NULL)\n        newNode->next = NULL;\n    else\n        newNode->next = top;\n    top = newNode;\n    printf(\"Pushed %d onto the stack.\\n\", value);\n}\nvoid pop()\n{\n    if (top == NULL)\n    {\n        printf(\"Stack is EMPTY! Deletion not possible.\\n\");\n        return;\n    }\n    struct Node *temp = top;\n    printf(\"Popped %d from the stack.\\n\", temp->data);\n    top = top->next;\n    free(temp);\n}\nvoid display()\n{\n    if (top == NULL)\n    {\n        printf(\"Stack is EMPTY!\\n\");\n        return;\n    }\n    struct Node *temp = top;\n    printf(\"Stack (top to bottom): \");\n    while (temp->next != NULL)\n    {\n        printf(\"%d ---> \", temp->data);\n        temp = temp->next;\n    }\n    printf(\"%d ---> NULL\\n\", temp->data);\n}\nint main()\n{\n    int choice, value;\n    do {\n        printf(\"\\n===== Stack Using Linked List =====\\n\");\n        printf(\"1. Push\\n\");\n        printf(\"2. Pop\\n\");\n        printf(\"3. Display\\n\");\n        printf(\"4. Exit\\n\");\n        printf(\"Enter your choice: \");\n        scanf(\"%d\", &choice);\n        switch (choice)\n        {\n            case 1:\n                printf(\"Enter value to push: \");\n                scanf(\"%d\", &value);\n                push(value);\n                break;\n            case 2:\n                pop();\n                break;\n            case 3:\n                display();\n                break;\n            case 4:\n                printf(\"Exiting...\\n\");\n                break;\n            default:\n                printf(\"Invalid choice!\\n\");\n        }\n    } while (choice != 4);\n    return 0;\n}"
+  },
+  {
+    "id": 8,
+    "title": "Experiment 8",
+    "aim": "Write a program to implement Queue using Linked List.",
+    "code": "#include <stdio.h>\n#include <stdlib.h>\nstruct Node\n{\n    int data;\n    struct Node *next;\n};\nstruct Node *front = NULL;\nstruct Node *rear  = NULL;\nvoid enQueue(int value)\n{\n    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));\n    if (!newNode)\n    {\n        printf(\"Memory allocation failed!\\n\");\n        return;\n    }\n    newNode->data = value;\n    newNode->next = NULL;\n    if (rear == NULL)\n    {\n        front = newNode;\n        rear  = newNode;\n    }\n    else\n    {\n        rear->next = newNode;\n        rear       = newNode;\n    }\n    printf(\"Inserted %d into the queue.\\n\", value);\n}\nvoid deQueue()\n{\n    if (front == NULL)\n    {\n        printf(\"Queue is EMPTY! Deletion not possible.\\n\");\n        return;\n    }\n    struct Node *temp = front;\n    printf(\"Deleted %d from the queue.\\n\", temp->data);\n    front = front->next;\n    if (front == NULL)\n        rear = NULL;\n    free(temp);\n}\nvoid display()\n{\n    if (front == NULL)\n    {\n        printf(\"Queue is EMPTY!\\n\");\n        return;\n    }\n    struct Node *temp = front;\n    printf(\"Queue (front to rear): \");\n    while (temp->next != NULL)\n    {\n        printf(\"%d ---> \", temp->data);\n        temp = temp->next;\n    }\n    printf(\"%d ---> NULL\\n\", temp->data);\n}\nint main()\n{\n    int choice, value;\n    do {\n        printf(\"\\n===== Queue Using Linked List =====\\n\");\n        printf(\"1. enQueue (Insert)\\n\");\n        printf(\"2. deQueue (Delete)\\n\");\n        printf(\"3. Display\\n\");\n        printf(\"4. Exit\\n\");\n        printf(\"Enter your choice: \");\n        scanf(\"%d\", &choice);\n        switch (choice)\n        {\n            case 1:\n                printf(\"Enter value to insert: \");\n                scanf(\"%d\", &value);\n                enQueue(value);\n                break;\n            case 2:\n                deQueue();\n                break;\n            case 3:\n                display();\n                break;\n            case 4:\n                printf(\"Exiting...\\n\");\n                break;\n            default:\n                printf(\"Invalid choice!\\n\");\n        }\n    } while (choice != 4);\n    return 0;\n}"
+  },
+  {
+    "id": 9,
+    "title": "Experiment 9",
+    "aim": "Write a program that uses functions to perform the following",
+    "code": "#include <stdio.h>\n#include <stdlib.h>\nstruct Node\n{\n    int data;\n    struct Node *prev;\n    struct Node *next;\n};\nstruct Node *head = NULL;\nstruct Node *createNode(int value)\n{\n    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));\n    if (!newNode)\n    {\n        printf(\"Memory allocation failed!\\n\");\n        exit(1);\n    }\n    newNode->data = value;\n    newNode->prev = NULL;\n    newNode->next = NULL;\n    return newNode;\n}\nvoid insertAtBeginning(int value)\n{\n    struct Node *newNode = createNode(value);\n    if (head == NULL)\n    {\n        head = newNode;\n    }\n    else\n    {\n        newNode->next = head;\n        head->prev    = newNode;\n        head          = newNode;\n    }\n    printf(\"Inserted %d at the beginning.\\n\", value);\n}\nvoid insertAtEnd(int value)\n{\n    struct Node *newNode = createNode(value);\n    if (head == NULL)\n    {\n        head = newNode;\n    }\n    else\n    {\n        struct Node *temp = head;\n        while (temp->next != NULL)\n            temp = temp->next;\n        temp->next    = newNode;\n        newNode->prev = temp;\n    }\n    printf(\"Inserted %d at the end.\\n\", value);\n}\nvoid insertAfterNode(int afterValue, int newValue)\n{\n    if (head == NULL)\n    {\n        printf(\"List is Empty! Cannot insert.\\n\");\n        return;\n    }\n    struct Node *temp = head;\n    while (temp != NULL && temp->data != afterValue)\n        temp = temp->next;\n    if (temp == NULL)\n    {\n        printf(\"Node with value %d not found!\\n\", afterValue);\n        return;\n    }\n    struct Node *newNode = createNode(newValue);\n    struct Node *nextNode = temp->next;\n    newNode->prev = temp;\n    newNode->next = nextNode;\n    temp->next    = newNode;\n    if (nextNode != NULL)\n        nextNode->prev = newNode;\n    printf(\"Inserted %d after %d.\\n\", newValue, afterValue);\n}\nvoid deleteFromBeginning()\n{\n    if (head == NULL)\n    {\n        printf(\"List is Empty! Deletion not possible.\\n\");\n        return;\n    }\n    struct Node *temp = head;\n    printf(\"Deleted %d from the beginning.\\n\", temp->data);\n    if (head->next == NULL)\n    {\n        head = NULL;\n    }\n    else\n    {\n        head       = head->next;\n        head->prev = NULL;\n    }\n    free(temp);\n}\nvoid deleteFromEnd()\n{\n    if (head == NULL)\n    {\n        printf(\"List is Empty! Deletion not possible.\\n\");\n        return;\n    }\n    struct Node *temp = head;\n    if (temp->next == NULL)\n    {\n        printf(\"Deleted %d from the end.\\n\", temp->data);\n        head = NULL;\n        free(temp);\n        return;\n    }\n    while (temp->next != NULL)\n        temp = temp->next;\n    printf(\"Deleted %d from the end.\\n\", temp->data);\n    temp->prev->next = NULL;\n    free(temp);\n}\nvoid deleteSpecific(int value)\n{\n    if (head == NULL)\n    {\n        printf(\"List is Empty! Deletion not possible.\\n\");\n        return;\n    }\n    struct Node *temp = head;\n    while (temp != NULL && temp->data != value)\n        temp = temp->next;\n    if (temp == NULL)\n    {\n        printf(\"Node with value %d not found!\\n\", value);\n        return;\n    }\n    if (head->next == NULL)\n    {\n        head = NULL;\n        free(temp);\n        printf(\"Deleted %d.\\n\", value);\n        return;\n    }\n    if (temp == head)\n    {\n        head       = head->next;\n        head->prev = NULL;\n        free(temp);\n        printf(\"Deleted %d from the beginning.\\n\", value);\n        return;\n    }\n    if (temp->next == NULL)\n    {\n        temp->prev->next = NULL;\n        free(temp);\n        printf(\"Deleted %d from the end.\\n\", value);\n        return;\n    }\n    temp->prev->next = temp->next;\n    temp->next->prev = temp->prev;\n    free(temp);\n    printf(\"Deleted node with value %d.\\n\", value);\n}\nvoid displayForward()\n{\n    if (head == NULL)\n    {\n        printf(\"List is EMPTY!\\n\");\n        return;\n    }\n    struct Node *temp = head;\n    printf(\"Forward  (head ---> tail): NULL <=> \");\n    while (temp != NULL)\n    {\n        printf(\"%d\", temp->data);\n        if (temp->next != NULL)\n            printf(\" <=> \");\n        temp = temp->next;\n    }\n    printf(\" <=> NULL\\n\");\n}\nvoid displayBackward()\n{\n    if (head == NULL)\n    {\n        printf(\"List is EMPTY!\\n\");\n        return;\n    }\n    struct Node *temp = head;\n    while (temp->next != NULL)\n        temp = temp->next;\n    printf(\"Backward (tail ---> head): NULL <=> \");\n    while (temp != NULL)\n    {\n        printf(\"%d\", temp->data);\n        if (temp->prev != NULL)\n            printf(\" <=> \");\n        temp = temp->prev;\n    }\n    printf(\" <=> NULL\\n\");\n}\nint main()\n{\n    int choice, value, afterVal;\n    do {\n        printf(\"\\n===== Doubly Linked List Menu =====\\n\");\n        printf(\"1. Insert at Beginning\\n\");\n        printf(\"2. Insert at End\\n\");\n        printf(\"3. Insert After a Node\\n\");\n        printf(\"4. Delete from Beginning\\n\");\n        printf(\"5. Delete from End\\n\");\n        printf(\"6. Delete a Specific Node\\n\");\n        printf(\"7. Display Forward\\n\");\n        printf(\"8. Display Backward\\n\");\n        printf(\"9. Exit\\n\");\n        printf(\"Enter your choice: \");\n        scanf(\"%d\", &choice);\n        switch (choice)\n        {\n            case 1:\n                printf(\"Enter value: \");\n                scanf(\"%d\", &value);\n                insertAtBeginning(value);\n                break;\n            case 2:\n                printf(\"Enter value: \");\n                scanf(\"%d\", &value);\n                insertAtEnd(value);\n                break;\n            case 3:\n                printf(\"Insert after node with value: \");\n                scanf(\"%d\", &afterVal);\n                printf(\"New value: \");\n                scanf(\"%d\", &value);\n                insertAfterNode(afterVal, value);\n                break;\n            case 4:\n                deleteFromBeginning();\n                break;\n            case 5:\n                deleteFromEnd();\n                break;\n            case 6:\n                printf(\"Enter value to delete: \");\n                scanf(\"%d\", &value);\n                deleteSpecific(value);\n                break;\n            case 7:\n                displayForward();\n                break;\n            case 8:\n                displayBackward();\n                break;\n            case 9:\n                printf(\"Exiting...\\n\");\n                break;\n            default:\n                printf(\"Invalid choice!\\n\");\n        }\n    } while (choice != 9);\n    return 0;\n}"
+  },
+  {
+    "id": 10,
+    "title": "Experiment 10",
+    "aim": "Write a program to perform the following operations on a Binary",
+    "code": "#include <stdio.h>\n#include <stdlib.h>\nstruct Node\n{\n    int data;\n    struct Node *left;\n    struct Node *right;\n};\nstruct Node *createNode(int value)\n{\n    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));\n    if (!newNode)\n    {\n        printf(\"Memory allocation failed!\\n\");\n        exit(1);\n    }\n    newNode->data  = value;\n    newNode->left  = NULL;\n    newNode->right = NULL;\n    return newNode;\n}\nstruct Node *insert(struct Node *root, int value)\n{\n    if (root == NULL)\n        return createNode(value);\n    if (value < root->data)\n        root->left = insert(root->left, value);\n    else if (value > root->data)\n        root->right = insert(root->right, value);\n    else\n        printf(\"Duplicate value %d not inserted.\\n\", value);\n    return root;\n}\nstruct Node *search(struct Node *root, int key)\n{\n    if (root == NULL || root->data == key)\n        return root;\n    if (key < root->data)\n        return search(root->left, key);\n    else\n        return search(root->right, key);\n}\nstruct Node *findMin(struct Node *node)\n{\n    while (node->left != NULL)\n        node = node->left;\n    return node;\n}\nstruct Node *deleteNode(struct Node *root, int value)\n{\n    if (root == NULL)\n    {\n        printf(\"Value %d not found in the BST.\\n\", value);\n        return root;\n    }\n    if (value < root->data)\n        root->left = deleteNode(root->left, value);\n    else if (value > root->data)\n        root->right = deleteNode(root->right, value);\n    else\n    {\n        if (root->left == NULL && root->right == NULL)\n        {\n            free(root);\n            return NULL;\n        }\n        else if (root->left == NULL)\n        {\n            struct Node *temp = root->right;\n            free(root);\n            return temp;\n        }\n        else if (root->right == NULL)\n        {\n            struct Node *temp = root->left;\n            free(root);\n            return temp;\n        }\n        else\n        {\n            struct Node *successor = findMin(root->right);\n            root->data  = successor->data;\n            root->right = deleteNode(root->right, successor->data);\n        }\n    }\n    return root;\n}\nvoid inorder(struct Node *root)\n{\n    if (root == NULL)\n        return;\n    inorder(root->left);\n    printf(\"%d  \", root->data);\n    inorder(root->right);\n}\nvoid preorder(struct Node *root)\n{\n    if (root == NULL)\n        return;\n    printf(\"%d  \", root->data);\n    preorder(root->left);\n    preorder(root->right);\n}\nvoid postorder(struct Node *root)\n{\n    if (root == NULL)\n        return;\n    postorder(root->left);\n    postorder(root->right);\n    printf(\"%d  \", root->data);\n}\nint main()\n{\n    struct Node *root = NULL;\n    int choice, value;\n    struct Node *result;\n    do {\n        printf(\"\\n===== Binary Search Tree Menu =====\\n\");\n        printf(\"1. Insert\\n\");\n        printf(\"2. Delete\\n\");\n        printf(\"3. Search\\n\");\n        printf(\"4. Inorder Traversal\\n\");\n        printf(\"5. Preorder Traversal\\n\");\n        printf(\"6. Postorder Traversal\\n\");\n        printf(\"7. Exit\\n\");\n        printf(\"Enter your choice: \");\n        scanf(\"%d\", &choice);\n        switch (choice)\n        {\n            case 1:\n                printf(\"Enter value to insert: \");\n                scanf(\"%d\", &value);\n                root = insert(root, value);\n                printf(\"Inserted %d into BST.\\n\", value);\n                break;\n            case 2:\n                printf(\"Enter value to delete: \");\n                scanf(\"%d\", &value);\n                root = deleteNode(root, value);\n                printf(\"Deleted %d from BST (if it existed).\\n\", value);\n                break;\n            case 3:\n                printf(\"Enter key to search: \");\n                scanf(\"%d\", &value);\n                result = search(root, value);\n                if (result != NULL)\n                    printf(\"Key %d FOUND in the BST.\\n\", value);\n                else\n                    printf(\"Key %d NOT FOUND in the BST.\\n\", value);\n                break;\n            case 4:\n                printf(\"Inorder Traversal  : \");\n                inorder(root);\n                printf(\"\\n\");\n                break;\n            case 5:\n                printf(\"Preorder Traversal : \");\n                preorder(root);\n                printf(\"\\n\");\n                break;\n            case 6:\n                printf(\"Postorder Traversal: \");\n                postorder(root);\n                printf(\"\\n\");\n                break;\n            case 7:\n                printf(\"Exiting...\\n\");\n                break;\n            default:\n                printf(\"Invalid choice!\\n\");\n        }\n    } while (choice != 7);\n    return 0;\n}"
+  }
+];
+
+        let currentExp = null;
+
+        function checkLogin() {
+            const input = document.getElementById('passcode').value;
+            const error = document.getElementById('error-msg');
+            
+            if (input.toUpperCase() === 'BEER') {
+                document.getElementById('login-overlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('login-overlay').style.display = 'none';
+                    document.getElementById('main-container').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('main-container').style.opacity = '1';
+                    }, 50);
+                    initApp();
+                }, 500);
+            } else {
+                error.style.display = 'block';
+                input.value = '';
+            }
+        }
+
+        function initApp() {
+            lucide.createIcons();
+            renderNav();
+            loadExperiment(1);
+        }
+
+        function renderNav() {
+            const nav = document.getElementById('nav-list');
+            nav.innerHTML = '';
+            experiments.forEach(exp => {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn';
+                btn.id = `nav-${exp.id}`;
+                btn.innerHTML = `<i data-lucide="file-code" size="16"></i> ${exp.title}`;
+                btn.onclick = () => loadExperiment(exp.id);
+                nav.appendChild(btn);
+            });
+            lucide.createIcons();
+        }
+
+        function loadExperiment(id) {
+            const exp = experiments.find(e => e.id === id);
+            currentExp = exp;
+
+            // Update UI
+            document.getElementById('display-title').innerText = exp.title;
+            document.getElementById('display-aim').innerText = exp.aim;
+            
+            const codeElem = document.getElementById('display-code');
+            codeElem.textContent = exp.code;
+            
+            // Re-highlight code
+            Prism.highlightElement(codeElem);
+
+            // Update Sidebar Active state
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`nav-${id}`).classList.add('active');
+
+            // Reset copy button
+            const copyBtn = document.getElementById('copy-btn');
+            copyBtn.innerHTML = '<i data-lucide="copy" size="16"></i> <span>Copy Code</span>';
+            copyBtn.classList.remove('copied');
+            lucide.createIcons();
+        }
+
+        function copyCode() {
+            const code = currentExp.code;
+            navigator.clipboard.writeText(code).then(() => {
+                const copyBtn = document.getElementById('copy-btn');
+                copyBtn.innerHTML = '<i data-lucide="check" size="16"></i> <span>Copied!</span>';
+                copyBtn.classList.add('copied');
+                lucide.createIcons();
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i data-lucide="copy" size="16"></i> <span>Copy Code</span>';
+                    copyBtn.classList.remove('copied');
+                    lucide.createIcons();
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
