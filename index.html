@@ -135,6 +135,37 @@
             gap: 8px;
         }
 
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-note {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .header-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.45rem 0.7rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .header-link:hover {
+            color: var(--primary-color);
+            background: rgba(47, 141, 70, 0.1);
+            border-color: rgba(47, 141, 70, 0.5);
+        }
+
         .layout {
             display: grid;
             grid-template-columns: 300px 1fr;
@@ -322,6 +353,9 @@
             .sidebar {
                 display: none;
             }
+            .header-note {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -345,8 +379,12 @@
                 <i data-lucide="code-2"></i>
                 GeeksforGeeks
             </div>
-            <div style="font-size: 0.9rem; color: var(--text-muted)">
-                Advanced Data Structures &amp; Algorithms Lab
+            <div class="header-actions">
+                <span class="header-note">Advanced Data Structures &amp; Algorithms Lab</span>
+                <a class="header-link" href="sql/">
+                    <i data-lucide="database" size="15"></i>
+                    SQL Practicals
+                </a>
             </div>
         </header>
 

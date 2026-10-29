@@ -1,0 +1,3110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete MySQL practical list for the 2026-27 external exam: connection commands, schema, queries for all 20 exercises.">
+    <title>SQL Practicals 2026-27 | GeeksforGeeks</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --green: #2f8d46;
+            --green-bright: #68d585;
+            --green-soft: rgba(47, 141, 70, 0.14);
+            --green-line: rgba(104, 213, 133, 0.32);
+            --bg: #0f1111;
+            --bg-deep: #0a0c0c;
+            --panel: #1c1e1e;
+            --panel-2: #151717;
+            --code: #121414;
+            --line: #303333;
+            --line-soft: #262929;
+            --text: #f2f4f2;
+            --muted: #9aa49c;
+            --amber: #d6a84b;
+            --amber-soft: rgba(214, 168, 75, 0.10);
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Inter', sans-serif;
+            --max: 1040px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background:
+                radial-gradient(900px 500px at 72% -12%, rgba(47, 141, 70, 0.10), transparent 62%),
+                var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        ::selection {
+            background: rgba(104, 213, 133, 0.28);
+            color: #fff;
+        }
+
+        a {
+            color: var(--green-bright);
+        }
+
+        button,
+        input,
+        select {
+            font-family: inherit;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--green-bright);
+            outline-offset: 2px;
+        }
+
+        /* ---------- Top bar ---------- */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 60;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 2rem;
+            background: rgba(15, 17, 17, 0.88);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+        }
+
+        .brand-mark {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            color: var(--green-bright);
+            background: var(--green-soft);
+            border: 1px solid var(--green-line);
+            border-radius: 8px;
+        }
+
+        .brand-sub {
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .topnav {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .topnav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.86rem;
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .topnav a:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .topnav a.active {
+            color: var(--green-bright);
+            background: var(--green-soft);
+        }
+
+        /* ---------- Shell ---------- */
+        .shell {
+            display: grid;
+            grid-template-columns: 276px minmax(0, 1fr);
+            max-width: 1480px;
+            margin: 0 auto;
+        }
+
+        .rail {
+            position: sticky;
+            top: 61px;
+            height: calc(100vh - 61px);
+            overflow-y: auto;
+            padding: 1.4rem 1.15rem 2rem;
+            background: rgba(21, 23, 23, 0.62);
+            border-right: 1px solid var(--line-soft);
+        }
+
+        .rail-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 0.5rem;
+            padding: 0 0.5rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .rail-head strong {
+            font-size: 0.8rem;
+            color: var(--text);
+            letter-spacing: 0.02em;
+        }
+
+        .rail-head span {
+            font-family: var(--mono);
+            font-size: 0.66rem;
+            color: var(--muted);
+        }
+
+        .search {
+            position: relative;
+            margin-bottom: 1.1rem;
+        }
+
+        .search .icon {
+            position: absolute;
+            left: 0.65rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            display: flex;
+            pointer-events: none;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 0.58rem 0.7rem 0.58rem 2rem;
+            color: var(--text);
+            background: #101212;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        .search input::placeholder {
+            color: #6f7a72;
+        }
+
+        .search input:focus {
+            outline: none;
+            border-color: var(--green);
+            box-shadow: 0 0 0 2px rgba(47, 141, 70, 0.18);
+        }
+
+        .toc-group {
+            margin-bottom: 1.15rem;
+        }
+
+        .toc-group[hidden] {
+            display: none;
+        }
+
+        .toc-group h3 {
+            padding-left: 0.5rem;
+            margin-bottom: 0.35rem;
+            color: #6f7a72;
+            font-size: 0.64rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .toc-link {
+            display: flex;
+            align-items: baseline;
+            gap: 0.65rem;
+            padding: 0.4rem 0.5rem;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            line-height: 1.35;
+            border-radius: 5px;
+            border-left: 2px solid transparent;
+        }
+
+        .toc-link:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .toc-link.active {
+            color: var(--green-bright);
+            background: var(--green-soft);
+            border-left-color: var(--green);
+        }
+
+        .toc-num {
+            flex: 0 0 20px;
+            color: #67736a;
+            font-family: var(--mono);
+            font-size: 0.67rem;
+        }
+
+        .toc-link.active .toc-num {
+            color: var(--green-bright);
+        }
+
+        /* ---------- Main ---------- */
+        main {
+            min-width: 0;
+        }
+
+        .wrap {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding: 0 2.5rem 4rem;
+        }
+
+        .hero {
+            padding: 3.8rem 0 2.4rem;
+            border-bottom: 1px solid var(--line-soft);
+        }
+
+        .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.15rem;
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: 0.74rem;
+        }
+
+        .hero-kicker::before {
+            content: "";
+            width: 18px;
+            height: 1px;
+            background: var(--green);
+        }
+
+        .hero h1 {
+            max-width: 800px;
+            font-size: clamp(2.35rem, 5vw, 3.9rem);
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.02;
+        }
+
+        .hero-lede {
+            max-width: 640px;
+            margin-top: 1.15rem;
+            color: var(--muted);
+            font-size: 1.03rem;
+            line-height: 1.72;
+        }
+
+        .hero-term {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin-top: 1.35rem;
+            padding: 0.55rem 0.85rem;
+            background: var(--code);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            color: #c7d2c9;
+            font-family: var(--mono);
+            font-size: 0.78rem;
+        }
+
+        .hero-term .prompt {
+            color: var(--green-bright);
+        }
+
+        .caret {
+            width: 7px;
+            height: 14px;
+            background: var(--green-bright);
+            animation: blink 1.2s steps(1) infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 1.6rem;
+        }
+
+        .hero-footnote {
+            max-width: 640px;
+            margin-top: 0.8rem;
+            color: #758078;
+            font-size: 0.76rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            padding: 0.66rem 1rem;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            font-size: 0.84rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #25763a;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border-color: var(--line);
+            color: var(--text);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #4a4f4a;
+        }
+
+        .mobile-index {
+            display: none;
+        }
+
+        /* ---------- Connection panel ---------- */
+        .connect {
+            margin: 2.2rem 0 0;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), transparent 38%), var(--panel-2);
+            scroll-margin-top: 84px;
+        }
+
+        .connect-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.3rem 1.4rem;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .connect-head h2 {
+            font-size: 1.18rem;
+            letter-spacing: -0.015em;
+        }
+
+        .connect-head p {
+            margin-top: 0.3rem;
+            color: var(--muted);
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--green-bright);
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            white-space: nowrap;
+        }
+
+        .status::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green-bright);
+            box-shadow: 0 0 7px var(--green-bright);
+        }
+
+        .credentials {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            border-bottom: 1px solid var(--line);
+        }
+
+        .cred {
+            min-width: 0;
+            padding: 0.8rem 1rem;
+            border-right: 1px solid var(--line-soft);
+        }
+
+        .cred:last-child {
+            border-right: 0;
+        }
+
+        .cred dt {
+            margin-bottom: 0.22rem;
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: 0.62rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .cred dd {
+            overflow: hidden;
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 0.82rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cred.password dd {
+            color: var(--amber);
+        }
+
+        .connect-body {
+            padding: 1rem 1.4rem 1.3rem;
+        }
+
+        .db-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .db-tab {
+            padding: 0.42rem 0.72rem;
+            background: transparent;
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            color: var(--muted);
+            font-size: 0.76rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .db-tab:hover {
+            color: var(--text);
+            border-color: #4a4f4a;
+        }
+
+        .db-tab.active {
+            color: var(--green-bright);
+            background: var(--green-soft);
+            border-color: var(--green-line);
+        }
+
+        .connect-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-top: 0.85rem;
+            padding: 0.65rem 0.8rem;
+            background: var(--amber-soft);
+            border: 1px solid rgba(214, 168, 75, 0.22);
+            border-radius: 6px;
+            color: #c9b98f;
+            font-size: 0.78rem;
+            line-height: 1.55;
+        }
+
+        .connect-note svg {
+            flex: 0 0 auto;
+            margin-top: 1px;
+            color: var(--amber);
+        }
+
+        /* ---------- Practical sections ---------- */
+        .practical {
+            padding: 2.8rem 0;
+            border-bottom: 1px solid var(--line-soft);
+            scroll-margin-top: 84px;
+        }
+
+        .practical[hidden] {
+            display: none;
+        }
+
+        .p-head {
+            display: grid;
+            grid-template-columns: 50px minmax(0, 1fr);
+            gap: 1rem;
+            align-items: start;
+            margin-bottom: 1.15rem;
+        }
+
+        .p-num {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 30px;
+            margin-top: 0.18rem;
+            color: var(--green-bright);
+            background: var(--green-soft);
+            border: 1px solid var(--green-line);
+            border-radius: 5px;
+            font-family: var(--mono);
+            font-size: 0.76rem;
+            font-weight: 500;
+        }
+
+        .practical h2 {
+            font-size: 1.42rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.28;
+        }
+
+        .p-aim {
+            max-width: 760px;
+            margin-top: 0.36rem;
+            color: var(--muted);
+            font-size: 0.92rem;
+            line-height: 1.65;
+        }
+
+        .p-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.8rem;
+        }
+
+        .copy-full-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.42rem 0.65rem;
+            background: var(--green-soft);
+            border: 1px solid var(--green-line);
+            border-radius: 5px;
+            color: var(--green-bright);
+            font-size: 0.74rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .copy-full-btn:hover {
+            background: rgba(47, 141, 70, 0.22);
+        }
+
+        .copy-full-btn.copied {
+            background: rgba(47, 141, 70, 0.24);
+        }
+
+        .p-action-note {
+            color: #758078;
+            font-size: 0.7rem;
+            font-family: var(--mono);
+        }
+
+        .p-body {
+            padding-left: 66px;
+        }
+
+        .block + .block {
+            margin-top: 0.85rem;
+        }
+
+        .code-card {
+            overflow: hidden;
+            background: var(--code);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+        }
+
+        .code-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.55rem 0.85rem;
+            background: #181b1b;
+            border-bottom: 1px solid var(--line-soft);
+        }
+
+        .code-file {
+            overflow: hidden;
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            flex: 0 0 auto;
+            padding: 0.28rem 0.45rem;
+            background: transparent;
+            border: 0;
+            border-radius: 4px;
+            color: var(--muted);
+            font-size: 0.7rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .copy-btn.copied {
+            color: var(--green-bright);
+        }
+
+        pre[class*="language-"] {
+            margin: 0 !important;
+            padding: 1.05rem 1.15rem !important;
+            overflow: auto;
+            background: var(--code) !important;
+            font-family: var(--mono) !important;
+            font-size: 0.79rem !important;
+            line-height: 1.65 !important;
+            tab-size: 4;
+        }
+
+        pre[class*="language-"] code {
+            font-family: var(--mono) !important;
+            text-shadow: none !important;
+        }
+
+        .code-card.diagram pre {
+            color: #c7d2c9;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            line-height: 1.55;
+            padding: 1.15rem;
+            overflow: auto;
+            white-space: pre;
+        }
+
+        .p-note {
+            margin-top: 0.85rem;
+            padding-left: 0.8rem;
+            border-left: 2px solid var(--line);
+            color: var(--muted);
+            font-size: 0.83rem;
+            line-height: 1.7;
+        }
+
+        .p-note strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .p-note code {
+            padding: 0.08em 0.3em;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+            color: #dce4dd;
+            font-family: var(--mono);
+            font-size: 0.9em;
+        }
+
+        .relations {
+            display: grid;
+            gap: 0.3rem;
+            margin-top: 0.9rem;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.018);
+            border: 1px solid var(--line-soft);
+            border-radius: 6px;
+        }
+
+        .relation {
+            display: flex;
+            gap: 0.75rem;
+            color: var(--muted);
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .relation b {
+            flex: 0 0 160px;
+            color: #d5ddd6;
+            font-family: var(--mono);
+            font-size: 0.71rem;
+            font-weight: 500;
+        }
+
+        .empty-state {
+            display: none;
+            padding: 2.5rem 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .final-cta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+            padding: 1.4rem 1.5rem;
+            background: var(--green-soft);
+            border: 1px solid var(--green-line);
+            border-radius: 10px;
+        }
+
+        .final-cta h2 {
+            font-size: 1.15rem;
+            letter-spacing: -0.015em;
+        }
+
+        .final-cta p {
+            max-width: 650px;
+            margin-top: 0.3rem;
+            color: var(--muted);
+            font-size: 0.83rem;
+            line-height: 1.65;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 2.2rem 0 0;
+            color: #758078;
+            font-size: 0.76rem;
+            line-height: 1.6;
+        }
+
+        footer a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: var(--green-bright);
+        }
+
+        /* ---------- Scrollbar ---------- */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--line);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4a4f4a;
+        }
+
+        @media (max-width: 980px) {
+            .shell {
+                grid-template-columns: 1fr;
+            }
+
+            .rail {
+                display: none;
+            }
+
+            .wrap {
+                padding: 0 1.35rem 3rem;
+            }
+
+            .topbar {
+                padding: 0.7rem 1.35rem;
+            }
+
+            .mobile-index {
+                position: sticky;
+                top: 61px;
+                z-index: 50;
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+                margin: 0;
+                padding: 0.55rem 1.35rem;
+                background: rgba(15, 17, 17, 0.93);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--line-soft);
+            }
+
+            .mobile-index label {
+                color: var(--muted);
+                font-family: var(--mono);
+                font-size: 0.68rem;
+                white-space: nowrap;
+            }
+
+            .mobile-index select {
+                min-width: 0;
+                width: 100%;
+                padding: 0.42rem 0.55rem;
+                color: var(--text);
+                background: #101212;
+                border: 1px solid var(--line);
+                border-radius: 5px;
+                font-size: 0.78rem;
+            }
+
+            .hero {
+                padding-top: 2.6rem;
+            }
+
+            .credentials {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .cred:nth-child(2n) {
+                border-right: 0;
+            }
+
+            .cred:last-child {
+                grid-column: 1 / -1;
+                border-top: 1px solid var(--line-soft);
+            }
+        }
+
+        @media (max-width: 620px) {
+            .brand-sub,
+            .topnav .back-link {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.25rem;
+            }
+
+            .hero-lede {
+                font-size: 0.95rem;
+            }
+
+            .p-head {
+                grid-template-columns: 40px minmax(0, 1fr);
+                gap: 0.7rem;
+            }
+
+            .p-num {
+                width: 34px;
+                height: 27px;
+                font-size: 0.68rem;
+            }
+
+            .practical h2 {
+                font-size: 1.22rem;
+            }
+
+            .p-body {
+                padding-left: 0;
+            }
+
+            .connect-head {
+                flex-direction: column;
+            }
+
+            .cred {
+                padding: 0.7rem 0.8rem;
+                border-right: 0;
+                border-bottom: 1px solid var(--line-soft);
+            }
+
+            .cred:last-child {
+                border-bottom: 0;
+            }
+
+            .relation {
+                flex-direction: column;
+                gap: 0.1rem;
+            }
+
+            .relation b {
+                flex-basis: auto;
+            }
+
+            .final-cta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            pre[class*="language-"] {
+                font-size: 0.73rem !important;
+                white-space: pre-wrap;
+                overflow-wrap: anywhere;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="topbar">
+        <a class="brand" href="../">
+            <span class="brand-mark"><i data-lucide="database" size="18"></i></span>
+            <span>GeeksforGeeks <span class="brand-sub">/ SQL Lab</span></span>
+        </a>
+        <nav class="topnav" aria-label="Site navigation">
+            <a class="back-link" href="../"><span class="back-label">ADSA Lab</span></a>
+            <a href="." class="active" aria-current="page">SQL Practicals</a>
+        </nav>
+    </header>
+
+    <div class="shell">
+        <aside class="rail" aria-label="Practical index">
+            <div class="rail-head">
+                <strong>SQL Practicals</strong>
+                <span>2026-27</span>
+            </div>
+
+            <div class="search">
+                <span class="icon" aria-hidden="true"><i data-lucide="search" size="14"></i></span>
+                <label for="practical-search" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search practicals</label>
+                <input type="search" id="practical-search" placeholder="Search queries..." autocomplete="off">
+            </div>
+
+            <nav id="toc"></nav>
+        </aside>
+
+        <main>
+            <div class="mobile-index">
+                <label for="mobile-jump">Jump to</label>
+                <select id="mobile-jump" aria-label="Jump to a practical"></select>
+            </div>
+
+            <div class="wrap">
+                <section class="hero">
+                    <div class="hero-kicker">External Practical / 2026-27</div>
+                    <h1>The full SQL practical list, ready to run.</h1>
+                    <p class="hero-lede">
+                        Twenty exercises built on one library database — from <code>CREATE TABLE</code> and
+                        constraints to joins, views, triggers, and row locks. Copy a whole practical and it runs
+                        from start to finish: schema, sample data, and queries included.
+                    </p>
+                    <div class="hero-term" aria-hidden="true">
+                        <span class="prompt">mysql&gt;</span>
+                        <span>USE library_db;</span>
+                        <span class="caret"></span>
+                    </div>
+                    <div class="hero-actions">
+                        <a class="btn btn-primary" href="#connect">
+                            <i data-lucide="plug-zap" size="15"></i>
+                            Database connection
+                        </a>
+                        <button class="btn btn-ghost" id="copy-all" type="button">
+                            <i data-lucide="files" size="15"></i>
+                            Copy final SQL
+                        </button>
+                    </div>
+                    <p class="hero-footnote">The final SQL copy contains all 20 practicals and every operation, with the database setup repeated before each one so the whole script can run top to bottom.</p>
+                </section>
+
+                <section class="connect" id="connect" data-search="connect database mysql password rgit123 host localhost root library_db python java php node">
+                    <div class="connect-head">
+                        <div>
+                            <h2>Connect to the database</h2>
+                            <p>MySQL 8.x · host <code>localhost</code> · port <code>3306</code></p>
+                        </div>
+                        <span class="status">ready</span>
+                    </div>
+
+                    <dl class="credentials">
+                        <div class="cred"><dt>Host</dt><dd>localhost</dd></div>
+                        <div class="cred"><dt>Port</dt><dd>3306</dd></div>
+                        <div class="cred"><dt>User</dt><dd>root</dd></div>
+                        <div class="cred password"><dt>Password</dt><dd>rgit123</dd></div>
+                        <div class="cred"><dt>Database</dt><dd>library_db</dd></div>
+                    </dl>
+
+                    <div class="connect-body">
+                        <div class="db-tabs" id="db-tabs" role="tablist" aria-label="Connection examples"></div>
+                        <div class="code-card">
+                            <div class="code-top">
+                                <span class="code-file" id="db-file">mysql-cli.sh</span>
+                                <button class="copy-btn" id="db-copy" type="button">
+                                    <i data-lucide="copy" size="13"></i>
+                                    <span>Copy</span>
+                                </button>
+                            </div>
+                            <pre><code class="language-bash" id="db-code"></code></pre>
+                        </div>
+                        <div class="connect-note">
+                            <i data-lucide="shield-alert" size="15"></i>
+                            <span>These are local lab credentials. Do not reuse this password on a public or shared server.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <div id="practicals"></div>
+                <p class="empty-state" id="empty-state">No practical matches that search. Try “join”, “view”, or “trigger”.</p>
+
+                <section class="final-cta" aria-labelledby="final-sql-title">
+                    <div>
+                        <h2 id="final-sql-title">Final SQL</h2>
+                        <p>One copy with all 20 practicals and every operation: create, insert, alter, select, grant, revoke, joins, subqueries, transactions, views, triggers, and locks. Each section includes the full setup so the whole script runs top to bottom.</p>
+                    </div>
+                    <button class="btn btn-primary" id="copy-all-bottom" type="button">
+                        <i data-lucide="files" size="15"></i>
+                        Copy final SQL
+                    </button>
+                </section>
+
+                <footer>
+                    <span>SQL List for External Practical · 2026-27<br>Built for MySQL 8.x.</span>
+                    <span><a href="../">Back to ADSA Lab</a> · <a href="#connect">Connection details</a></span>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-templating.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script>
+        /* ------------------------------------------------------------------
+           Connection examples
+           ------------------------------------------------------------------ */
+        const connectionSnippets = [
+            {
+                label: "MySQL CLI",
+                file: "mysql-cli.sh",
+                lang: "bash",
+                code: `# Start MySQL (Linux)
+sudo systemctl start mysql
+
+# Connect with the lab password
+mysql -u root -p
+# Enter password: rgit123
+
+# Or connect in a single command
+mysql -u root -prgit123
+
+# Create and select the database
+CREATE DATABASE IF NOT EXISTS library_db;
+USE library_db;
+
+# Check the connection
+SELECT DATABASE(), VERSION(), CURRENT_USER();`
+            },
+            {
+                label: "Python",
+                file: "connect.py",
+                lang: "python",
+                code: `import mysql.connector
+
+conn = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="rgit123",
+    database="library_db"
+)
+
+cursor = conn.cursor()
+cursor.execute("SELECT book_id, title, price FROM books")
+
+for row in cursor.fetchall():
+    print(row)
+
+cursor.close()
+conn.close()`
+            },
+            {
+                label: "Java",
+                file: "LibraryApp.java",
+                lang: "java",
+                code: `import java.sql.*;
+
+public class LibraryApp {
+    public static void main(String[] args) throws Exception {
+        String url = "jdbc:mysql://localhost:3306/library_db";
+
+        try (Connection conn = DriverManager.getConnection(url, "root", "rgit123");
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(
+                 "SELECT book_id, title, price FROM books")) {
+
+            while (rs.next()) {
+                System.out.println(
+                    rs.getInt("book_id") + " | " +
+                    rs.getString("title") + " | " +
+                    rs.getBigDecimal("price"));
+            }
+        }
+    }
+}`
+            },
+            {
+                label: "PHP",
+                file: "connect.php",
+                lang: "php",
+                code: `<?php
+$conn = new mysqli("localhost", "root", "rgit123", "library_db");
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$result = $conn->query("SELECT book_id, title, price FROM books");
+
+while ($row = $result->fetch_assoc()) {
+    echo $row["book_id"] . " | " . $row["title"] . " | " . $row["price"] . PHP_EOL;
+}
+
+$conn->close();
+?>`
+            },
+            {
+                label: "Node.js",
+                file: "connect.js",
+                lang: "javascript",
+                code: `const mysql = require("mysql2/promise");
+
+async function main() {
+    const conn = await mysql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "rgit123",
+        database: "library_db"
+    });
+
+    const [rows] = await conn.execute(
+        "SELECT book_id, title, price FROM books"
+    );
+    console.table(rows);
+    await conn.end();
+}
+
+main().catch(console.error);`
+            }
+        ];
+
+        /* ------------------------------------------------------------------
+           Practical data
+           ------------------------------------------------------------------ */
+        const practicals = [
+            {
+                id: 1,
+                title: "Draw the ER model",
+                short: "ER model",
+                aim: "Select and draw an ER diagram for a real-world scenario such as a Library, Hospital, or Banking system.",
+                intro: "This page uses a library system for every exercise. Authors write books, members borrow books through loans, and each loan can have one fine payment.",
+                blocks: [
+                    {
+                        label: "er-model.txt",
+                        file: "er-model.txt",
+                        lang: "none",
+                        code: `AUTHORS                            BOOKS
++----------------+   1       N   +----------------------+
+| author_id (PK) |---------------| book_id (PK)         |
+| author_name    |               | title                |
+| country        |               | author_id (FK)       |
++----------------+               | category             |
+                                 | price                |
+                                 | total_copies         |
+                                 | available_copies     |
+                                 +----------+-----------+
+                                            | 1
+                                            |
+                                            | N
+MEMBERS                            LOANS
++----------------+   1       N   +----------------------+
+| member_id (PK) |---------------| loan_id (PK)         |
+| member_name    |               | book_id (FK)         |
+| email (UNIQUE) |               | member_id (FK)       |
+| phone (UNIQUE) |               | issue_date           |
+| join_date      |               | due_date             |
+| status         |               | return_date          |
++----------------+               | fine                  |
+                                 +----------+-----------+
+                                            | 1
+                                            |
+                                            | 0..1
+                                 +----------v-----------+
+                                 | FINE_PAYMENTS        |
+                                 | payment_id (PK)      |
+                                 | loan_id (FK, UNIQUE) |
+                                 | amount               |
+                                 | paid_on              |
+                                 | mode                 |
+                                 +----------------------+`
+                    },
+                    {
+                        label: "inspect-schema.sql",
+                        file: "inspect-schema.sql",
+                        lang: "sql",
+                        code: `-- Run this after Practical 2 to inspect the implemented model.
+SHOW TABLES;
+DESCRIBE authors;
+DESCRIBE books;
+DESCRIBE members;
+DESCRIBE loans;`
+                    }
+                ],
+                relations: [
+                    ["AUTHORS -> BOOKS", "One author writes many books; each book has exactly one author."],
+                    ["MEMBERS -> LOANS", "One member takes many loans over time; each loan belongs to one member."],
+                    ["BOOKS -> LOANS", "One book can appear in many loans; each loan refers to one book."],
+                    ["LOANS -> FINE_PAYMENTS", "A loan has zero or one fine payment, so loan_id is UNIQUE there."]
+                ],
+                note: "The ER diagram is the design; the tables in Practical 2 are its physical implementation. Keys marked <strong>PK</strong> are primary keys and keys marked <strong>FK</strong> are foreign keys."
+            },
+            {
+                id: 2,
+                title: "Create tables with CREATE TABLE",
+                short: "CREATE TABLE",
+                aim: "Create the library tables using SQL CREATE TABLE.",
+                blocks: [
+                    {
+                        label: "schema-part-1.sql",
+                        file: "schema-part-1.sql",
+                        lang: "sql",
+                        code: `CREATE DATABASE IF NOT EXISTS library_db;
+USE library_db;
+
+CREATE TABLE authors (
+    author_id   INT AUTO_INCREMENT PRIMARY KEY,
+    author_name VARCHAR(100) NOT NULL,
+    country     VARCHAR(50)  NOT NULL DEFAULT 'India'
+);
+
+CREATE TABLE books (
+    book_id          INT AUTO_INCREMENT PRIMARY KEY,
+    title            VARCHAR(150) NOT NULL,
+    author_id        INT NOT NULL,
+    category         VARCHAR(50) NOT NULL,
+    price            DECIMAL(8,2) NOT NULL,
+    total_copies     INT NOT NULL DEFAULT 1,
+    available_copies INT NOT NULL DEFAULT 1,
+    CONSTRAINT fk_books_author
+        FOREIGN KEY (author_id) REFERENCES authors(author_id)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT chk_book_price CHECK (price >= 0),
+    CONSTRAINT chk_book_copies
+        CHECK (available_copies BETWEEN 0 AND total_copies)
+);`
+                    },
+                    {
+                        label: "schema-part-2.sql",
+                        file: "schema-part-2.sql",
+                        lang: "sql",
+                        code: `CREATE TABLE members (
+    member_id   INT AUTO_INCREMENT PRIMARY KEY,
+    member_name VARCHAR(100) NOT NULL,
+    email       VARCHAR(120) NOT NULL UNIQUE,
+    phone       CHAR(10) UNIQUE,
+    join_date   DATE NOT NULL DEFAULT (CURRENT_DATE),
+    status      ENUM('ACTIVE', 'SUSPENDED', 'INACTIVE')
+                NOT NULL DEFAULT 'ACTIVE'
+);
+
+CREATE TABLE loans (
+    loan_id     INT AUTO_INCREMENT PRIMARY KEY,
+    book_id     INT NOT NULL,
+    member_id   INT NOT NULL,
+    issue_date  DATE NOT NULL,
+    due_date    DATE NOT NULL,
+    return_date DATE NULL,
+    fine        DECIMAL(8,2) NOT NULL DEFAULT 0.00,
+    CONSTRAINT fk_loans_book
+        FOREIGN KEY (book_id) REFERENCES books(book_id)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_loans_member
+        FOREIGN KEY (member_id) REFERENCES members(member_id)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT chk_loan_due CHECK (due_date >= issue_date),
+    CONSTRAINT chk_loan_fine CHECK (fine >= 0)
+);`
+                    }
+                ],
+                note: "Run these two blocks once on a fresh database. Every later practical reuses <code>library_db</code> and these four tables."
+            },
+            {
+                id: 3,
+                title: "Apply constraints",
+                short: "Constraints",
+                aim: "Apply constraints such as PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL, and CHECK.",
+                blocks: [
+                    {
+                        label: "fine-payments.sql",
+                        file: "fine-payments.sql",
+                        lang: "sql",
+                        code: `CREATE TABLE fine_payments (
+    payment_id INT AUTO_INCREMENT,
+    loan_id    INT NOT NULL,
+    amount     DECIMAL(8,2) NOT NULL,
+    paid_on    DATE NOT NULL DEFAULT (CURRENT_DATE),
+    mode       ENUM('CASH', 'UPI', 'CARD') NOT NULL DEFAULT 'UPI',
+
+    -- PRIMARY KEY: one unique identifier per payment
+    CONSTRAINT pk_fine_payments PRIMARY KEY (payment_id),
+
+    -- UNIQUE: a loan can have at most one payment row
+    CONSTRAINT uq_fine_loan UNIQUE (loan_id),
+
+    -- FOREIGN KEY: the loan must exist
+    CONSTRAINT fk_fine_loan
+        FOREIGN KEY (loan_id) REFERENCES loans(loan_id)
+        ON DELETE CASCADE,
+
+    -- CHECK: the amount must be positive
+    CONSTRAINT chk_fine_amount CHECK (amount > 0)
+);`
+                    },
+                    {
+                        label: "verify-constraints.sql",
+                        file: "verify-constraints.sql",
+                        lang: "sql",
+                        code: `SHOW CREATE TABLE fine_payments\\G
+
+-- After Practical 6, each statement below should fail.
+INSERT INTO members (member_name, email)
+VALUES (NULL, 'no-name@example.com');              -- NOT NULL
+
+INSERT INTO members (member_name, email)
+VALUES ('Copy Cat', 'aarav@example.com');          -- UNIQUE
+
+INSERT INTO books
+    (title, author_id, category, price, total_copies, available_copies)
+VALUES
+    ('Ghost Book', 999, 'Fiction', 100.00, 1, 1); -- FOREIGN KEY
+
+INSERT INTO fine_payments (loan_id, amount)
+VALUES (1, -50.00);                                -- CHECK`
+                    }
+                ],
+                note: "The four failing inserts are intentional: they prove the database is enforcing the rules. In MySQL Workbench, use <code>SHOW CREATE TABLE fine_payments;</code> instead of the <code>\\G</code> form."
+            },
+            {
+                id: 4,
+                title: "Modify tables with ALTER TABLE",
+                short: "ALTER TABLE",
+                aim: "Modify existing tables using ALTER TABLE.",
+                blocks: [
+                    {
+                        label: "alter-tables.sql",
+                        file: "alter-tables.sql",
+                        lang: "sql",
+                        code: `-- Add a column at a specific position
+ALTER TABLE books
+    ADD COLUMN publisher VARCHAR(100) AFTER title;
+
+-- Change a column definition
+ALTER TABLE books
+    MODIFY COLUMN category VARCHAR(60) NOT NULL;
+
+-- Rename a column and change its type at the same time
+ALTER TABLE books
+    CHANGE COLUMN publisher publisher_name VARCHAR(120);
+
+-- Add a nullable column
+ALTER TABLE members
+    ADD COLUMN address VARCHAR(200) DEFAULT NULL;
+
+-- Remove a column
+ALTER TABLE members
+    DROP COLUMN address;
+
+-- Add a named CHECK constraint
+ALTER TABLE books
+    ADD CONSTRAINT chk_book_price_range
+    CHECK (price BETWEEN 0 AND 10000);
+
+-- Add an index for title searches
+ALTER TABLE books
+    ADD INDEX idx_books_title (title);
+
+-- Rename a table
+ALTER TABLE books RENAME TO library_books;
+ALTER TABLE library_books RENAME TO books;`
+                    },
+                    {
+                        label: "cleanup.sql",
+                        file: "cleanup.sql",
+                        lang: "sql",
+                        code: `-- Optional: remove what this practical added.
+ALTER TABLE books DROP INDEX idx_books_title;
+ALTER TABLE books DROP CHECK chk_book_price_range;
+ALTER TABLE books DROP COLUMN publisher_name;`
+                    }
+                ],
+                note: "ALTER TABLE changes the table structure, not the rows. On large tables some changes rebuild the table, so use them carefully outside the lab."
+            },
+            {
+                id: 5,
+                title: "Drop and recreate tables",
+                short: "DROP TABLE",
+                aim: "Drop and recreate tables using DROP TABLE.",
+                blocks: [
+                    {
+                        label: "drop-in-order.sql",
+                        file: "drop-in-order.sql",
+                        lang: "sql",
+                        code: `-- Drop child tables before parent tables.
+DROP TABLE IF EXISTS fine_payments;
+DROP TABLE IF EXISTS loans;
+DROP TABLE IF EXISTS books;
+DROP TABLE IF EXISTS members;
+DROP TABLE IF EXISTS authors;`
+                    },
+                    {
+                        label: "drop-database.sql",
+                        file: "drop-database.sql",
+                        lang: "sql",
+                        code: `-- Removes the database and every table inside it.
+DROP DATABASE IF EXISTS library_db;
+
+-- To rebuild the lab, create the database again and rerun
+-- Practical 2, Practical 3, and Practical 6.`
+                    }
+                ],
+                note: "DROP TABLE is permanent. If you only want to empty a table and keep its structure, use <code>TRUNCATE TABLE</code> or <code>DELETE FROM</code> instead."
+            },
+            {
+                id: 6,
+                title: "Insert records with INSERT INTO",
+                short: "INSERT INTO",
+                aim: "Insert records into tables using INSERT INTO.",
+                blocks: [
+                    {
+                        label: "seed-master-data.sql",
+                        file: "seed-master-data.sql",
+                        lang: "sql",
+                        code: `INSERT INTO authors (author_id, author_name, country) VALUES
+(1, 'R. K. Narayan', 'India'),
+(2, 'J. K. Rowling', 'United Kingdom'),
+(3, 'George Orwell', 'United Kingdom'),
+(4, 'A. P. J. Abdul Kalam', 'India'),
+(5, 'Chetan Bhagat', 'India');
+
+INSERT INTO books
+    (book_id, title, author_id, category, price, total_copies, available_copies)
+VALUES
+(1, 'Malgudi Days', 1, 'Fiction', 299.00, 5, 3),
+(2, 'Harry Potter and the Philosopher''s Stone', 2, 'Fantasy', 499.00, 4, 2),
+(3, '1984', 3, 'Dystopian', 350.00, 3, 1),
+(4, 'Wings of Fire', 4, 'Biography', 275.00, 6, 4),
+(5, 'Five Point Someone', 5, 'Fiction', 250.00, 2, 0),
+(6, 'The Guide', 1, 'Fiction', 320.00, 3, 3),
+(7, 'Animal Farm', 3, 'Satire', 199.00, 4, 2),
+(8, 'Ignited Minds', 4, 'Inspiration', 210.00, 2, 1);
+
+INSERT INTO members
+    (member_id, member_name, email, phone, join_date, status)
+VALUES
+(1, 'Aarav Sharma', 'aarav@example.com', '9876543210', '2025-06-01', 'ACTIVE'),
+(2, 'Diya Patel', 'diya@example.com', '9876543211', '2025-07-12', 'ACTIVE'),
+(3, 'Rohan Mehta', 'rohan@example.com', '9876543212', '2025-08-20', 'SUSPENDED'),
+(4, 'Isha Nair', 'isha@example.com', '9876543213', '2026-01-05', 'ACTIVE'),
+(5, 'Kabir Singh', 'kabir@example.com', '9876543214', '2026-02-18', 'INACTIVE');`
+                    },
+                    {
+                        label: "seed-transactions.sql",
+                        file: "seed-transactions.sql",
+                        lang: "sql",
+                        code: `INSERT INTO loans
+    (loan_id, book_id, member_id, issue_date, due_date, return_date, fine)
+VALUES
+(1, 1, 1, '2026-09-01', '2026-09-15', '2026-09-12', 0.00),
+(2, 2, 2, '2026-09-05', '2026-09-19', '2026-09-25', 30.00),
+(3, 3, 1, '2026-09-20', '2026-10-04', NULL, 0.00),
+(4, 5, 3, '2026-09-22', '2026-10-06', '2026-10-10', 20.00),
+(5, 4, 4, '2026-10-01', '2026-10-15', NULL, 0.00),
+(6, 1, 2, '2026-10-05', '2026-10-19', '2026-10-18', 0.00),
+(7, 7, 4, '2026-10-10', '2026-10-24', NULL, 0.00),
+(8, 8, 3, '2026-09-15', '2026-09-29', '2026-10-05', 30.00);
+
+INSERT INTO fine_payments
+    (payment_id, loan_id, amount, paid_on, mode)
+VALUES
+(1, 2, 30.00, '2026-09-25', 'UPI'),
+(2, 8, 30.00, '2026-10-05', 'CASH');`
+                    }
+                ],
+                note: "Explicit IDs keep the sample data stable, so the joins and subqueries later in the list return predictable results."
+            },
+            {
+                id: 7,
+                title: "Update and delete records",
+                short: "UPDATE / DELETE",
+                aim: "Update records using UPDATE and delete records using DELETE FROM.",
+                blocks: [
+                    {
+                        label: "update-records.sql",
+                        file: "update-records.sql",
+                        lang: "sql",
+                        code: `-- Increase fiction prices by 10%
+UPDATE books
+SET price = ROUND(price * 1.10, 2)
+WHERE category = 'Fiction';
+
+-- Issue one copy of a book
+UPDATE books
+SET available_copies = available_copies - 1
+WHERE book_id = 1
+  AND available_copies > 0;
+
+-- Suspend a member
+UPDATE members
+SET status = 'SUSPENDED'
+WHERE member_id = 3;
+
+-- Record a return and its fine
+UPDATE loans
+SET return_date = '2026-10-12',
+    fine = 10.00
+WHERE loan_id = 3;`
+                    },
+                    {
+                        label: "delete-records.sql",
+                        file: "delete-records.sql",
+                        lang: "sql",
+                        code: `-- Preview the rows before deleting them
+SELECT *
+FROM loans
+WHERE return_date IS NOT NULL
+  AND return_date < '2026-10-01';
+
+DELETE FROM loans
+WHERE return_date IS NOT NULL
+  AND return_date < '2026-10-01';
+
+-- Delete a member only when no loan references them
+DELETE FROM members
+WHERE member_id = 5
+  AND NOT EXISTS (
+      SELECT 1
+      FROM loans
+      WHERE loans.member_id = members.member_id
+  );`
+                    }
+                ],
+                note: "A missing <code>WHERE</code> clause changes or deletes every row. Preview the target rows with <code>SELECT</code> first; the DELETE above is also foreign-key safe."
+            },
+            {
+                id: 8,
+                title: "Select rows with conditions",
+                short: "SELECT + WHERE",
+                aim: "Retrieve data using SELECT with conditions.",
+                blocks: [
+                    {
+                        label: "select-conditions.sql",
+                        file: "select-conditions.sql",
+                        lang: "sql",
+                        code: `-- Equality and comparison
+SELECT book_id, title, category, price
+FROM books
+WHERE category = 'Fiction'
+  AND price < 400.00;
+
+SELECT member_name, email, join_date
+FROM members
+WHERE status = 'ACTIVE'
+  AND join_date >= '2026-01-01'
+ORDER BY join_date DESC;
+
+-- Range
+SELECT title, price
+FROM books
+WHERE price BETWEEN 200.00 AND 400.00
+ORDER BY price ASC;
+
+-- Membership
+SELECT title, category
+FROM books
+WHERE category IN ('Fantasy', 'Satire', 'Dystopian');
+
+-- Pattern matching
+SELECT title
+FROM books
+WHERE title LIKE '%Fire%';
+
+-- NULL checks
+SELECT loan_id, book_id, due_date
+FROM loans
+WHERE return_date IS NULL;
+
+-- Negation and limiting
+SELECT title, price
+FROM books
+WHERE NOT category = 'Fiction'
+ORDER BY price DESC
+LIMIT 3;
+
+-- Distinct values
+SELECT DISTINCT category
+FROM books
+ORDER BY category;`
+                    }
+                ],
+                note: "Use <code>IS NULL</code> or <code>IS NOT NULL</code> for missing values. Comparing with <code>= NULL</code> never matches anything."
+            },
+            {
+                id: 9,
+                title: "Assign access rights with GRANT",
+                short: "GRANT",
+                aim: "Assign access rights using GRANT.",
+                blocks: [
+                    {
+                        label: "grant-privileges.sql",
+                        file: "grant-privileges.sql",
+                        lang: "sql",
+                        code: `-- Create two local MySQL accounts.
+CREATE USER IF NOT EXISTS 'librarian'@'localhost'
+    IDENTIFIED BY 'rgit123';
+
+CREATE USER IF NOT EXISTS 'library_reader'@'localhost'
+    IDENTIFIED BY 'rgit123';
+
+-- Table-level privileges for the librarian.
+GRANT SELECT, INSERT, UPDATE, DELETE
+    ON library_db.*
+    TO 'librarian'@'localhost';
+
+-- Column-level privileges for the reader:
+-- only these columns may be read, and only available_copies updated.
+GRANT SELECT (book_id, title, category, price),
+      UPDATE (available_copies)
+    ON library_db.books
+    TO 'library_reader'@'localhost';
+
+FLUSH PRIVILEGES;
+
+SHOW GRANTS FOR 'librarian'@'localhost';
+SHOW GRANTS FOR 'library_reader'@'localhost';`
+                    }
+                ],
+                note: "These are MySQL accounts, not Linux accounts. The reader cannot run <code>SELECT *</code> because only selected columns were granted. Use <code>'%'</code> instead of <code>'localhost'</code> only when remote access is genuinely needed."
+            },
+            {
+                id: 10,
+                title: "Remove privileges with REVOKE",
+                short: "REVOKE",
+                aim: "Remove privileges using REVOKE.",
+                blocks: [
+                    {
+                        label: "revoke-privileges.sql",
+                        file: "revoke-privileges.sql",
+                        lang: "sql",
+                        code: `-- Take away delete rights from the librarian.
+REVOKE DELETE
+    ON library_db.*
+    FROM 'librarian'@'localhost';
+
+-- Remove one column-level update right from the reader.
+REVOKE UPDATE (available_copies)
+    ON library_db.books
+    FROM 'library_reader'@'localhost';
+
+-- Remove everything else from the reader.
+REVOKE ALL PRIVILEGES, GRANT OPTION
+    FROM 'library_reader'@'localhost';
+
+SHOW GRANTS FOR 'librarian'@'localhost';
+SHOW GRANTS FOR 'library_reader'@'localhost';
+
+-- Remove the accounts when the practical is over.
+DROP USER IF EXISTS 'librarian'@'localhost';
+DROP USER IF EXISTS 'library_reader'@'localhost';`
+                    }
+                ],
+                note: "REVOKE removes privileges but leaves the account in place. <code>DROP USER</code> removes the account itself."
+            },
+            {
+                id: 11,
+                title: "Comparison, logical, and range operators",
+                short: "Operators",
+                aim: "Execute queries using comparison, logical, and range operators.",
+                blocks: [
+                    {
+                        label: "operators.sql",
+                        file: "operators.sql",
+                        lang: "sql",
+                        code: `-- Comparison operators
+SELECT title, price FROM books WHERE price > 300.00;
+SELECT title, price FROM books WHERE price <> 499.00;
+SELECT title, price FROM books WHERE price <= 250.00;
+
+-- Logical operators
+SELECT title, category, price
+FROM books
+WHERE category = 'Fiction' AND price < 400.00;
+
+SELECT title, category
+FROM books
+WHERE category = 'Fantasy' OR category = 'Satire';
+
+SELECT title, category
+FROM books
+WHERE NOT (category = 'Fiction');
+
+-- Range operator
+SELECT title, price
+FROM books
+WHERE price BETWEEN 200.00 AND 400.00
+ORDER BY price;
+
+-- Membership operator
+SELECT title, author_id
+FROM books
+WHERE author_id IN (1, 3, 4);
+
+-- Pattern operator with wildcards
+SELECT title FROM books WHERE title LIKE 'The%';
+SELECT title FROM books WHERE title LIKE '%Fire%';
+
+-- NULL operator
+SELECT member_name, phone
+FROM members
+WHERE phone IS NOT NULL;`
+                    }
+                ],
+                note: "<code>BETWEEN a AND b</code> includes both endpoints. <code>%</code> matches any number of characters and <code>_</code> matches exactly one character in a <code>LIKE</code> pattern."
+            },
+            {
+                id: 12,
+                title: "Aggregate functions and GROUP BY",
+                short: "Aggregates",
+                aim: "Use aggregate functions (SUM, AVG, COUNT) and GROUP BY.",
+                blocks: [
+                    {
+                        label: "aggregates.sql",
+                        file: "aggregates.sql",
+                        lang: "sql",
+                        code: `-- Whole-table summary
+SELECT
+    COUNT(*)             AS total_titles,
+    SUM(total_copies)    AS total_copies,
+    AVG(price)           AS average_price,
+    MIN(price)           AS cheapest,
+    MAX(price)           AS costliest
+FROM books;
+
+-- One row per category
+SELECT
+    category,
+    COUNT(*)              AS titles,
+    ROUND(AVG(price), 2)  AS average_price
+FROM books
+GROUP BY category
+ORDER BY titles DESC;
+
+-- Filter groups after aggregation
+SELECT category, COUNT(*) AS titles
+FROM books
+GROUP BY category
+HAVING COUNT(*) > 1;
+
+-- Aggregate the loans table
+SELECT
+    member_id,
+    COUNT(*)  AS total_loans,
+    SUM(fine) AS total_fine
+FROM loans
+GROUP BY member_id
+HAVING SUM(fine) > 0;
+
+-- Count unique borrowers
+SELECT COUNT(DISTINCT member_id) AS borrowers
+FROM loans;
+
+-- Sum all fines collected
+SELECT SUM(fine) AS total_fines
+FROM loans;`
+                    }
+                ],
+                note: "<code>WHERE</code> filters individual rows before grouping; <code>HAVING</code> filters groups after aggregation."
+            },
+            {
+                id: 13,
+                title: "Join tables",
+                short: "Joins",
+                aim: "Perform joins using INNER, LEFT, RIGHT, and FULL joins.",
+                blocks: [
+                    {
+                        label: "outer-joins.sql",
+                        file: "outer-joins.sql",
+                        lang: "sql",
+                        code: `-- INNER JOIN: only matching rows
+SELECT b.book_id, b.title, a.author_name, b.price
+FROM books AS b
+INNER JOIN authors AS a
+    ON a.author_id = b.author_id
+ORDER BY b.title;
+
+-- LEFT JOIN: every author, even one with no books
+SELECT a.author_name, COUNT(b.book_id) AS books_written
+FROM authors AS a
+LEFT JOIN books AS b
+    ON b.author_id = a.author_id
+GROUP BY a.author_id, a.author_name
+ORDER BY books_written DESC;
+
+-- RIGHT JOIN: every book, with its author when one exists
+SELECT b.title, a.author_name
+FROM authors AS a
+RIGHT JOIN books AS b
+    ON b.author_id = a.author_id
+ORDER BY b.title;`
+                    },
+                    {
+                        label: "full-and-three-table.sql",
+                        file: "full-and-three-table.sql",
+                        lang: "sql",
+                        code: `-- MySQL has no FULL OUTER JOIN; emulate it with LEFT UNION RIGHT.
+SELECT a.author_name, b.title
+FROM authors AS a
+LEFT JOIN books AS b
+    ON b.author_id = a.author_id
+
+UNION
+
+SELECT a.author_name, b.title
+FROM authors AS a
+RIGHT JOIN books AS b
+    ON b.author_id = a.author_id;
+
+-- Three-table join: who currently has which book
+SELECT m.member_name, b.title, l.issue_date, l.due_date
+FROM loans AS l
+INNER JOIN members AS m
+    ON m.member_id = l.member_id
+INNER JOIN books AS b
+    ON b.book_id = l.book_id
+WHERE l.return_date IS NULL
+ORDER BY l.due_date;`
+                    }
+                ],
+                note: "An INNER JOIN returns matches only. LEFT and RIGHT keep unmatched rows from one side. FULL keeps unmatched rows from both sides and needs the UNION emulation in MySQL."
+            },
+            {
+                id: 14,
+                title: "Nested and correlated subqueries",
+                short: "Subqueries",
+                aim: "Write nested and correlated subqueries.",
+                blocks: [
+                    {
+                        label: "nested-subqueries.sql",
+                        file: "nested-subqueries.sql",
+                        lang: "sql",
+                        code: `-- Nested subquery: books above the average price
+SELECT title, price
+FROM books
+WHERE price > (SELECT AVG(price) FROM books)
+ORDER BY price DESC;
+
+-- Nested subquery with IN: members holding a book now
+SELECT member_name
+FROM members
+WHERE member_id IN (
+    SELECT member_id
+    FROM loans
+    WHERE return_date IS NULL
+);
+
+-- Nested subquery with NOT IN: books never borrowed
+SELECT title
+FROM books
+WHERE book_id NOT IN (
+    SELECT book_id
+    FROM loans
+);`
+                    },
+                    {
+                        label: "correlated-subqueries.sql",
+                        file: "correlated-subqueries.sql",
+                        lang: "sql",
+                        code: `-- Correlated subquery: costliest book in each category
+SELECT b.title, b.category, b.price
+FROM books AS b
+WHERE b.price = (
+    SELECT MAX(b2.price)
+    FROM books AS b2
+    WHERE b2.category = b.category
+)
+ORDER BY b.category;
+
+-- Correlated EXISTS: members with an overdue unreturned loan
+SELECT m.member_name
+FROM members AS m
+WHERE EXISTS (
+    SELECT 1
+    FROM loans AS l
+    WHERE l.member_id = m.member_id
+      AND l.return_date IS NULL
+      AND l.due_date < CURDATE()
+);
+
+-- Derived table: a subquery used in FROM
+SELECT category, avg_price
+FROM (
+    SELECT category, AVG(price) AS avg_price
+    FROM books
+    GROUP BY category
+) AS category_summary
+WHERE avg_price > 300;`
+                    }
+                ],
+                note: "A correlated subquery references the outer query, so it is evaluated per outer row. A nested subquery runs independently and returns a value or set the outer query can use."
+            },
+            {
+                id: 15,
+                title: "UNION, INTERSECT, and MINUS",
+                short: "Set operations",
+                aim: "Perform UNION, INTERSECT, and MINUS queries.",
+                blocks: [
+                    {
+                        label: "set-operations.sql",
+                        file: "set-operations.sql",
+                        lang: "sql",
+                        code: `-- UNION: stack results and remove duplicate rows
+SELECT title AS book_title, price
+FROM books
+WHERE category = 'Fiction'
+
+UNION
+
+SELECT title, price
+FROM books
+WHERE price < 250.00
+ORDER BY price;
+
+-- UNION ALL: keep duplicates as well
+SELECT category
+FROM books
+WHERE price < 300.00
+
+UNION ALL
+
+SELECT category
+FROM books
+WHERE category = 'Fiction';
+
+-- INTERSECT (MySQL 8.0.31+): rows present in both results
+SELECT member_id
+FROM loans
+WHERE fine > 0
+
+INTERSECT
+
+SELECT member_id
+FROM members
+WHERE status = 'ACTIVE';
+
+-- Oracle's MINUS is EXCEPT in MySQL 8.0.31+
+SELECT book_id
+FROM books
+
+EXCEPT
+
+SELECT book_id
+FROM loans;`
+                    },
+                    {
+                        label: "portable-alternatives.sql",
+                        file: "portable-alternatives.sql",
+                        lang: "sql",
+                        code: `-- Works on every MySQL 8.x version: INNER JOIN instead of INTERSECT
+SELECT DISTINCT l.member_id
+FROM loans AS l
+INNER JOIN members AS m
+    ON m.member_id = l.member_id
+WHERE l.fine > 0
+  AND m.status = 'ACTIVE';
+
+-- Works on every MySQL 8.x version: LEFT JOIN instead of EXCEPT
+SELECT b.book_id, b.title
+FROM books AS b
+LEFT JOIN loans AS l
+    ON l.book_id = b.book_id
+WHERE l.loan_id IS NULL;`
+                    }
+                ],
+                note: "MySQL 8.0.31 added <code>INTERSECT</code> and <code>EXCEPT</code>. Oracle calls the difference operator <code>MINUS</code>; the portable MySQL substitute is a <code>LEFT JOIN ... WHERE ... IS NULL</code>."
+            },
+            {
+                id: 16,
+                title: "COMMIT, ROLLBACK, and SAVEPOINT",
+                short: "Transactions",
+                aim: "Demonstrate COMMIT, ROLLBACK, and SAVEPOINT.",
+                blocks: [
+                    {
+                        label: "transactions.sql",
+                        file: "transactions.sql",
+                        lang: "sql",
+                        code: `-- 1. COMMIT: keep both changes together
+START TRANSACTION;
+
+INSERT INTO loans (book_id, member_id, issue_date, due_date)
+VALUES (2, 1, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 14 DAY));
+
+UPDATE books
+SET available_copies = available_copies - 1
+WHERE book_id = 2;
+
+COMMIT;
+
+-- 2. ROLLBACK: undo an uncommitted change
+START TRANSACTION;
+
+UPDATE books
+SET price = price + 100.00
+WHERE book_id = 1;
+
+ROLLBACK;
+
+-- The price should be unchanged
+SELECT book_id, title, price
+FROM books
+WHERE book_id = 1;
+
+-- 3. SAVEPOINT: undo only part of a transaction
+START TRANSACTION;
+
+INSERT INTO members (member_name, email, phone)
+VALUES ('Meera Joshi', 'meera@example.com', '9876543215');
+
+SAVEPOINT after_member;
+
+UPDATE members
+SET status = 'SUSPENDED'
+WHERE email = 'meera@example.com';
+
+ROLLBACK TO SAVEPOINT after_member;
+
+COMMIT;
+
+-- Meera exists, but her status is still ACTIVE
+SELECT member_name, status
+FROM members
+WHERE email = 'meera@example.com';`
+                    }
+                ],
+                note: "If you created the triggers in Practical 19, the loan trigger already reduces <code>available_copies</code>. In that case remove the manual <code>UPDATE books</code> from this transaction to avoid decrementing twice. DDL statements cause an implicit commit in MySQL."
+            },
+            {
+                id: 17,
+                title: "Create a SQL function",
+                short: "Function",
+                aim: "Implement a function in SQL.",
+                blocks: [
+                    {
+                        label: "calculate-fine.sql",
+                        file: "calculate-fine.sql",
+                        lang: "sql",
+                        code: `DROP FUNCTION IF EXISTS calculate_fine;
+
+DELIMITER $$
+
+CREATE FUNCTION calculate_fine (
+    p_due_date DATE,
+    p_return_date DATE
+)
+RETURNS DECIMAL(8,2)
+DETERMINISTIC
+BEGIN
+    DECLARE v_days INT DEFAULT 0;
+
+    IF p_return_date IS NOT NULL
+       AND p_return_date > p_due_date THEN
+        SET v_days = DATEDIFF(p_return_date, p_due_date);
+    END IF;
+
+    RETURN v_days * 5.00;
+END$$
+
+DELIMITER ;
+
+-- Use the function in a normal SELECT
+SELECT
+    loan_id,
+    due_date,
+    return_date,
+    calculate_fine(due_date, return_date) AS calculated_fine
+FROM loans;
+
+-- Inspect and remove it
+SHOW FUNCTION STATUS
+WHERE Db = 'library_db' AND Name = 'calculate_fine';
+
+DROP FUNCTION IF EXISTS calculate_fine;`
+                    }
+                ],
+                note: "<code>DELIMITER</code> is a mysql client command, not SQL. The function charges ₹5 per day after the due date. If binary logging blocks creation, enable <code>log_bin_trust_function_creators</code> or connect as an administrator."
+            },
+            {
+                id: 18,
+                title: "Create and use views",
+                short: "Views",
+                aim: "Create and use database views.",
+                blocks: [
+                    {
+                        label: "views.sql",
+                        file: "views.sql",
+                        lang: "sql",
+                        code: `-- A reusable catalogue with the author name resolved
+CREATE OR REPLACE VIEW vw_book_catalogue AS
+SELECT
+    b.book_id,
+    b.title,
+    a.author_name,
+    b.category,
+    b.price,
+    b.available_copies
+FROM books AS b
+INNER JOIN authors AS a
+    ON a.author_id = b.author_id;
+
+-- A view of loans that have not been returned
+CREATE OR REPLACE VIEW vw_active_loans AS
+SELECT
+    l.loan_id,
+    m.member_name,
+    b.title,
+    l.issue_date,
+    l.due_date,
+    DATEDIFF(CURDATE(), l.due_date) AS days_overdue
+FROM loans AS l
+INNER JOIN members AS m
+    ON m.member_id = l.member_id
+INNER JOIN books AS b
+    ON b.book_id = l.book_id
+WHERE l.return_date IS NULL;
+
+-- Query the views like tables
+SELECT *
+FROM vw_book_catalogue
+WHERE category = 'Fiction';
+
+SELECT *
+FROM vw_active_loans
+WHERE days_overdue > 0;
+
+-- List and inspect the views
+SHOW FULL TABLES
+WHERE Table_type = 'VIEW';
+
+SHOW CREATE VIEW vw_book_catalogue;
+
+-- Remove them when finished
+DROP VIEW IF EXISTS vw_active_loans;
+DROP VIEW IF EXISTS vw_book_catalogue;`
+                    }
+                ],
+                note: "A view stores a query, not a copy of the data. When you select from it, MySQL runs the underlying query against the current tables."
+            },
+            {
+                id: 19,
+                title: "Implement triggers",
+                short: "Triggers",
+                aim: "Implement triggers for automated actions.",
+                blocks: [
+                    {
+                        label: "audit-and-loan-triggers.sql",
+                        file: "audit-and-loan-triggers.sql",
+                        lang: "sql",
+                        code: `-- Audit table written by the triggers
+CREATE TABLE IF NOT EXISTS book_audit (
+    audit_id    INT AUTO_INCREMENT PRIMARY KEY,
+    book_id     INT NOT NULL,
+    action_type VARCHAR(10) NOT NULL,
+    old_copies  INT NULL,
+    new_copies  INT NULL,
+    changed_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    changed_by  VARCHAR(100) NOT NULL DEFAULT 'system'
+);
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_books_after_insert$$
+CREATE TRIGGER trg_books_after_insert
+AFTER INSERT ON books
+FOR EACH ROW
+BEGIN
+    INSERT INTO book_audit
+        (book_id, action_type, old_copies, new_copies, changed_by)
+    VALUES
+        (NEW.book_id, 'INSERT', NULL, NEW.available_copies, CURRENT_USER());
+END$$
+
+DROP TRIGGER IF EXISTS trg_books_after_update$$
+CREATE TRIGGER trg_books_after_update
+AFTER UPDATE ON books
+FOR EACH ROW
+BEGIN
+    IF NEW.available_copies <> OLD.available_copies THEN
+        INSERT INTO book_audit
+            (book_id, action_type, old_copies, new_copies, changed_by)
+        VALUES
+            (NEW.book_id, 'UPDATE', OLD.available_copies,
+             NEW.available_copies, CURRENT_USER());
+    END IF;
+END$$
+
+DROP TRIGGER IF EXISTS trg_loans_before_insert$$
+CREATE TRIGGER trg_loans_before_insert
+BEFORE INSERT ON loans
+FOR EACH ROW
+BEGIN
+    DECLARE v_available INT;
+
+    SELECT available_copies
+    INTO v_available
+    FROM books
+    WHERE book_id = NEW.book_id;
+
+    IF v_available IS NULL OR v_available <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Book is not available for issue';
+    END IF;
+END$$
+
+DROP TRIGGER IF EXISTS trg_loans_after_insert$$
+CREATE TRIGGER trg_loans_after_insert
+AFTER INSERT ON loans
+FOR EACH ROW
+BEGIN
+    UPDATE books
+    SET available_copies = available_copies - 1
+    WHERE book_id = NEW.book_id;
+END$$
+
+DELIMITER ;`
+                    },
+                    {
+                        label: "test-triggers.sql",
+                        file: "test-triggers.sql",
+                        lang: "sql",
+                        code: `-- 1. Insert a book: the audit trigger records it
+INSERT INTO books
+    (title, author_id, category, price, total_copies, available_copies)
+VALUES
+    ('The White Tiger', 5, 'Fiction', 350.00, 2, 2);
+
+SET @new_book = (
+    SELECT book_id FROM books WHERE title = 'The White Tiger'
+);
+
+-- 2. Update availability: another audit row
+UPDATE books
+SET available_copies = 1
+WHERE book_id = @new_book;
+
+-- 3. Issue the book: the loan trigger decrements availability
+INSERT INTO loans (book_id, member_id, issue_date, due_date)
+VALUES (@new_book, 1, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 14 DAY));
+
+-- 4. Review the audit trail
+SELECT *
+FROM book_audit
+ORDER BY audit_id;`
+                    }
+                ],
+                note: "A trigger runs inside the statement that fired it. MySQL does not allow a trigger to modify the table it is attached to, which is why these triggers update <code>book_audit</code> or <code>books</code> from a loan trigger instead of updating <code>loans</code> from a loan trigger."
+            },
+            {
+                id: 20,
+                title: "Transactions and locking",
+                short: "Locks",
+                aim: "Demonstrate transaction and concurrency control techniques using locks.",
+                blocks: [
+                    {
+                        label: "session-a.sql",
+                        file: "session-a.sql",
+                        lang: "sql",
+                        code: `-- Terminal 1: lock a row, change it, then commit.
+SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
+START TRANSACTION;
+
+SELECT available_copies
+FROM books
+WHERE book_id = 1
+FOR UPDATE;
+
+UPDATE books
+SET available_copies = available_copies - 1
+WHERE book_id = 1;
+
+-- Keep this transaction open, then run Session B.
+-- Session B waits here until this COMMIT finishes.
+COMMIT;`
+                    },
+                    {
+                        label: "session-b.sql",
+                        file: "session-b.sql",
+                        lang: "sql",
+                        code: `-- Terminal 2: this SELECT waits for Session A's row lock.
+START TRANSACTION;
+
+SELECT available_copies
+FROM books
+WHERE book_id = 1
+FOR UPDATE;
+
+COMMIT;`
+                    },
+                    {
+                        label: "table-locks-and-isolation.sql",
+                        file: "table-locks-and-isolation.sql",
+                        lang: "sql",
+                        code: `-- Table-level lock (use sparingly)
+-- book_audit is included because the Practical 19 trigger writes to it.
+LOCK TABLES books WRITE, loans WRITE, book_audit WRITE;
+
+INSERT INTO loans (book_id, member_id, issue_date, due_date)
+VALUES (3, 2, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 14 DAY));
+
+UNLOCK TABLES;
+
+-- Isolation levels
+SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
+START TRANSACTION;
+SELECT COUNT(*) AS loans_seen FROM loans;
+COMMIT;
+
+SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+START TRANSACTION;
+SELECT COUNT(*) AS loans_seen FROM loans;
+COMMIT;
+
+-- Reset the session to the MySQL default
+SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
+-- Inspect lock waits and the latest deadlock
+SHOW ENGINE INNODB STATUS;`
+                    }
+                ],
+                note: "Row locks are held until <code>COMMIT</code> or <code>ROLLBACK</code>. <code>LOCK TABLES</code> is a table-level lock that implicitly commits any open transaction. InnoDB also detects deadlocks and rolls back one of the competing transactions."
+            }
+        ];
+
+        /* ------------------------------------------------------------------
+           Standalone scripts for "Copy complete practical"
+           ------------------------------------------------------------------ */
+        const RESET_SQL = `-- Start from a clean database every time this script runs.
+DROP DATABASE IF EXISTS library_db;
+CREATE DATABASE library_db;
+USE library_db;`;
+
+        const BASE_SCHEMA_SQL = `CREATE TABLE authors (
+    author_id   INT AUTO_INCREMENT PRIMARY KEY,
+    author_name VARCHAR(100) NOT NULL,
+    country     VARCHAR(50)  NOT NULL DEFAULT 'India'
+);
+
+CREATE TABLE books (
+    book_id          INT AUTO_INCREMENT PRIMARY KEY,
+    title            VARCHAR(150) NOT NULL,
+    author_id        INT NOT NULL,
+    category         VARCHAR(50) NOT NULL,
+    price            DECIMAL(8,2) NOT NULL,
+    total_copies     INT NOT NULL DEFAULT 1,
+    available_copies INT NOT NULL DEFAULT 1,
+    CONSTRAINT fk_books_author
+        FOREIGN KEY (author_id) REFERENCES authors(author_id)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT chk_book_price CHECK (price >= 0),
+    CONSTRAINT chk_book_copies
+        CHECK (available_copies BETWEEN 0 AND total_copies)
+);
+
+CREATE TABLE members (
+    member_id   INT AUTO_INCREMENT PRIMARY KEY,
+    member_name VARCHAR(100) NOT NULL,
+    email       VARCHAR(120) NOT NULL UNIQUE,
+    phone       CHAR(10) UNIQUE,
+    join_date   DATE NOT NULL DEFAULT (CURRENT_DATE),
+    status      ENUM('ACTIVE', 'SUSPENDED', 'INACTIVE')
+                NOT NULL DEFAULT 'ACTIVE'
+);
+
+CREATE TABLE loans (
+    loan_id     INT AUTO_INCREMENT PRIMARY KEY,
+    book_id     INT NOT NULL,
+    member_id   INT NOT NULL,
+    issue_date  DATE NOT NULL,
+    due_date    DATE NOT NULL,
+    return_date DATE NULL,
+    fine        DECIMAL(8,2) NOT NULL DEFAULT 0.00,
+    CONSTRAINT fk_loans_book
+        FOREIGN KEY (book_id) REFERENCES books(book_id)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_loans_member
+        FOREIGN KEY (member_id) REFERENCES members(member_id)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT chk_loan_due CHECK (due_date >= issue_date),
+    CONSTRAINT chk_loan_fine CHECK (fine >= 0)
+);`;
+
+        const FINE_PAYMENTS_SQL = `CREATE TABLE fine_payments (
+    payment_id INT AUTO_INCREMENT,
+    loan_id    INT NOT NULL,
+    amount     DECIMAL(8,2) NOT NULL,
+    paid_on    DATE NOT NULL DEFAULT (CURRENT_DATE),
+    mode       ENUM('CASH', 'UPI', 'CARD') NOT NULL DEFAULT 'UPI',
+    CONSTRAINT pk_fine_payments PRIMARY KEY (payment_id),
+    CONSTRAINT uq_fine_loan UNIQUE (loan_id),
+    CONSTRAINT fk_fine_loan
+        FOREIGN KEY (loan_id) REFERENCES loans(loan_id)
+        ON DELETE CASCADE,
+    CONSTRAINT chk_fine_amount CHECK (amount > 0)
+);`;
+
+        const SEED_BASE_SQL = `INSERT INTO authors (author_id, author_name, country) VALUES
+(1, 'R. K. Narayan', 'India'),
+(2, 'J. K. Rowling', 'United Kingdom'),
+(3, 'George Orwell', 'United Kingdom'),
+(4, 'A. P. J. Abdul Kalam', 'India'),
+(5, 'Chetan Bhagat', 'India');
+
+INSERT INTO books
+    (book_id, title, author_id, category, price, total_copies, available_copies)
+VALUES
+(1, 'Malgudi Days', 1, 'Fiction', 299.00, 5, 3),
+(2, 'Harry Potter and the Philosopher''s Stone', 2, 'Fantasy', 499.00, 4, 2),
+(3, '1984', 3, 'Dystopian', 350.00, 3, 1),
+(4, 'Wings of Fire', 4, 'Biography', 275.00, 6, 4),
+(5, 'Five Point Someone', 5, 'Fiction', 250.00, 2, 0),
+(6, 'The Guide', 1, 'Fiction', 320.00, 3, 3),
+(7, 'Animal Farm', 3, 'Satire', 199.00, 4, 2),
+(8, 'Ignited Minds', 4, 'Inspiration', 210.00, 2, 1);
+
+INSERT INTO members
+    (member_id, member_name, email, phone, join_date, status)
+VALUES
+(1, 'Aarav Sharma', 'aarav@example.com', '9876543210', '2025-06-01', 'ACTIVE'),
+(2, 'Diya Patel', 'diya@example.com', '9876543211', '2025-07-12', 'ACTIVE'),
+(3, 'Rohan Mehta', 'rohan@example.com', '9876543212', '2025-08-20', 'SUSPENDED'),
+(4, 'Isha Nair', 'isha@example.com', '9876543213', '2026-01-05', 'ACTIVE'),
+(5, 'Kabir Singh', 'kabir@example.com', '9876543214', '2026-02-18', 'INACTIVE');
+
+INSERT INTO loans
+    (loan_id, book_id, member_id, issue_date, due_date, return_date, fine)
+VALUES
+(1, 1, 1, '2026-09-01', '2026-09-15', '2026-09-12', 0.00),
+(2, 2, 2, '2026-09-05', '2026-09-19', '2026-09-25', 30.00),
+(3, 3, 1, '2026-09-20', '2026-10-04', NULL, 0.00),
+(4, 5, 3, '2026-09-22', '2026-10-06', '2026-10-10', 20.00),
+(5, 4, 4, '2026-10-01', '2026-10-15', NULL, 0.00),
+(6, 1, 2, '2026-10-05', '2026-10-19', '2026-10-18', 0.00),
+(7, 7, 4, '2026-10-10', '2026-10-24', NULL, 0.00),
+(8, 8, 3, '2026-09-15', '2026-09-29', '2026-10-05', 30.00);`;
+
+        const SEED_FINES_SQL = `INSERT INTO fine_payments
+    (payment_id, loan_id, amount, paid_on, mode)
+VALUES
+(1, 2, 30.00, '2026-09-25', 'UPI'),
+(2, 8, 30.00, '2026-10-05', 'CASH');`;
+
+        const FULL_SETUP_SQL = [
+            RESET_SQL,
+            BASE_SCHEMA_SQL,
+            FINE_PAYMENTS_SQL,
+            SEED_BASE_SQL,
+            SEED_FINES_SQL
+        ].join("\n\n");
+
+        const BASE_SETUP_SQL = [
+            RESET_SQL,
+            BASE_SCHEMA_SQL,
+            SEED_BASE_SQL
+        ].join("\n\n");
+
+        const EMPTY_SETUP_SQL = [
+            RESET_SQL,
+            BASE_SCHEMA_SQL,
+            FINE_PAYMENTS_SQL
+        ].join("\n\n");
+
+        function practicalHeader(practical) {
+            return `-- ============================================================
+-- SQL Practical ${pad(practical.id)} - ${practical.title}
+-- Aim: ${practical.aim}
+-- Database: library_db  |  MySQL 8.x
+-- Connect: mysql -u root -p   (password: rgit123)
+--
+-- This script is self-contained. It drops and recreates library_db,
+-- creates the tables, loads the sample data, then runs the practical.
+-- ============================================================`;
+        }
+
+        function commentSql(text) {
+            return text.split("\n").map(line => "-- " + line).join("\n");
+        }
+
+        function buildCompleteScript(practical) {
+            const header = practicalHeader(practical);
+            const allBlocks = practical.blocks.map(block => block.code).join("\n\n");
+
+            switch (practical.id) {
+                case 1:
+                    return `${header}
+
+-- ER MODEL (reference)
+${commentSql(practical.blocks[0].code)}
+
+-- ------------------------------------------------------------
+-- Implement the model
+-- ------------------------------------------------------------
+${FULL_SETUP_SQL}
+
+-- Inspect the implemented schema
+${practical.blocks[1].code}`;
+
+                case 2:
+                    return `${header}
+
+${RESET_SQL}
+
+${BASE_SCHEMA_SQL}
+
+-- Inspect what was created
+SHOW TABLES;
+DESCRIBE authors;
+DESCRIBE books;
+DESCRIBE members;
+DESCRIBE loans;`;
+
+                case 3:
+                    return `${header}
+
+${BASE_SETUP_SQL}
+
+${practical.blocks[0].code}
+
+SHOW CREATE TABLE fine_payments\\G
+
+-- ------------------------------------------------------------
+-- Constraint checks
+-- The statements below are EXPECTED TO FAIL.
+-- Uncomment one at a time to prove each rule is enforced.
+-- ------------------------------------------------------------
+-- INSERT INTO members (member_name, email)
+-- VALUES (NULL, 'no-name@example.com');              -- NOT NULL
+
+-- INSERT INTO members (member_name, email)
+-- VALUES ('Copy Cat', 'aarav@example.com');          -- UNIQUE
+
+-- INSERT INTO books
+--     (title, author_id, category, price, total_copies, available_copies)
+-- VALUES
+--     ('Ghost Book', 999, 'Fiction', 100.00, 1, 1); -- FOREIGN KEY
+
+-- INSERT INTO fine_payments (loan_id, amount)
+-- VALUES (1, -50.00);                                -- CHECK`;
+
+                case 4:
+                    return `${header}
+
+${FULL_SETUP_SQL}
+
+${practical.blocks[0].code}
+
+SHOW CREATE TABLE books\\G
+
+-- Optional cleanup, left commented out so the altered table stays visible.
+-- ALTER TABLE books DROP INDEX idx_books_title;
+-- ALTER TABLE books DROP CHECK chk_book_price_range;
+-- ALTER TABLE books DROP COLUMN publisher_name;`;
+
+                case 5:
+                    return `${header}
+
+${FULL_SETUP_SQL}
+
+${allBlocks}
+
+SHOW DATABASES LIKE 'library_db';`;
+
+                case 6:
+                    return `${header}
+
+${EMPTY_SETUP_SQL}
+
+${allBlocks}
+
+SELECT COUNT(*) AS authors FROM authors;
+SELECT COUNT(*) AS books FROM books;
+SELECT COUNT(*) AS members FROM members;
+SELECT COUNT(*) AS loans FROM loans;
+SELECT COUNT(*) AS fine_payments FROM fine_payments;`;
+
+                case 10: {
+                    const grantBlock = practicals.find(item => item.id === 9).blocks[0].code;
+                    return `${header}
+
+${FULL_SETUP_SQL}
+
+-- Prerequisite: create the accounts and grants from Practical 9.
+${grantBlock}
+
+${allBlocks}`;
+                }
+
+                case 20: {
+                    const triggerBlock = practicals.find(item => item.id === 19).blocks[0].code;
+                    return `${header}
+
+${FULL_SETUP_SQL}
+
+-- Prerequisite: the audit table and triggers from Practical 19.
+${triggerBlock}
+
+${allBlocks}`;
+                }
+
+                default:
+                    return `${header}
+
+${FULL_SETUP_SQL}
+
+${allBlocks}`;
+            }
+        }
+
+        function buildAllScript() {
+            const header = `-- ============================================================
+-- SQL Practicals 2026-27 - Complete copyable script
+-- Database: library_db  |  MySQL 8.x
+-- Connect: mysql -u root -p   (password: rgit123)
+--
+-- Paste this entire script into one .sql file and run it with:
+--   mysql -u root -p < practicals.sql
+--
+-- Every practical section below recreates library_db and reloads the
+-- sample data, so the whole file can run from top to bottom.
+-- ============================================================
+
+`;
+
+            return header + practicals.map(buildCompleteScript).join("\n\n\n");
+        }
+
+        /* ------------------------------------------------------------------
+           Helpers
+           ------------------------------------------------------------------ */
+        let currentConnectionIndex = 0;
+        let currentConnectionCode = "";
+
+        function pad(n) {
+            return String(n).padStart(2, "0");
+        }
+
+        async function copyText(text, button) {
+            try {
+                await navigator.clipboard.writeText(text);
+            } catch (error) {
+                const area = document.createElement("textarea");
+                area.value = text;
+                area.style.position = "fixed";
+                area.style.opacity = "0";
+                document.body.appendChild(area);
+                area.select();
+                document.execCommand("copy");
+                area.remove();
+            }
+
+            const original = button.innerHTML;
+            button.innerHTML = '<i data-lucide="check" size="13"></i><span>Copied</span>';
+            button.classList.add("copied");
+            if (window.lucide) lucide.createIcons();
+
+            setTimeout(() => {
+                button.innerHTML = original;
+                button.classList.remove("copied");
+                if (window.lucide) lucide.createIcons();
+            }, 1800);
+        }
+
+        /* ------------------------------------------------------------------
+           Connection panel
+           ------------------------------------------------------------------ */
+        function renderConnectionTabs() {
+            const tabs = document.getElementById("db-tabs");
+
+            connectionSnippets.forEach((snippet, index) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "db-tab" + (index === 0 ? " active" : "");
+                button.textContent = snippet.label;
+                button.setAttribute("role", "tab");
+                button.setAttribute("aria-selected", index === 0 ? "true" : "false");
+                button.addEventListener("click", () => selectConnection(index));
+                tabs.appendChild(button);
+            });
+
+            document.getElementById("db-copy").addEventListener("click", (event) => {
+                copyText(currentConnectionCode, event.currentTarget);
+            });
+
+            selectConnection(0);
+        }
+
+        function selectConnection(index) {
+            const snippet = connectionSnippets[index];
+            currentConnectionIndex = index;
+            currentConnectionCode = snippet.code;
+
+            document.querySelectorAll(".db-tab").forEach((tab, i) => {
+                const active = i === index;
+                tab.classList.toggle("active", active);
+                tab.setAttribute("aria-selected", active ? "true" : "false");
+            });
+
+            document.getElementById("db-file").textContent = snippet.file;
+            const code = document.getElementById("db-code");
+            code.className = "language-" + snippet.lang;
+            code.textContent = snippet.code;
+
+            if (window.Prism) Prism.highlightElement(code);
+        }
+
+        /* ------------------------------------------------------------------
+           Practical rendering
+           ------------------------------------------------------------------ */
+        function buildToc() {
+            const groups = [
+                {
+                    label: "Start here",
+                    links: [{ id: "connect", num: "--", title: "Connect to MySQL" }]
+                },
+                {
+                    label: "Tables and rows",
+                    links: practicals.filter(p => p.id >= 1 && p.id <= 8)
+                        .map(p => ({ id: "practical-" + p.id, num: pad(p.id), title: p.short }))
+                },
+                {
+                    label: "Access and operators",
+                    links: practicals.filter(p => p.id >= 9 && p.id <= 12)
+                        .map(p => ({ id: "practical-" + p.id, num: pad(p.id), title: p.short }))
+                },
+                {
+                    label: "Joins and sets",
+                    links: practicals.filter(p => p.id >= 13 && p.id <= 15)
+                        .map(p => ({ id: "practical-" + p.id, num: pad(p.id), title: p.short }))
+                },
+                {
+                    label: "Transactions and objects",
+                    links: practicals.filter(p => p.id >= 16)
+                        .map(p => ({ id: "practical-" + p.id, num: pad(p.id), title: p.short }))
+                }
+            ];
+
+            const toc = document.getElementById("toc");
+
+            groups.forEach(group => {
+                const wrapper = document.createElement("div");
+                wrapper.className = "toc-group";
+
+                const heading = document.createElement("h3");
+                heading.textContent = group.label;
+                wrapper.appendChild(heading);
+
+                group.links.forEach(link => {
+                    const anchor = document.createElement("a");
+                    anchor.className = "toc-link";
+                    anchor.href = "#" + link.id;
+                    anchor.dataset.target = link.id;
+                    anchor.innerHTML = '<span class="toc-num">' + link.num + "</span><span>" + link.title + "</span>";
+                    wrapper.appendChild(anchor);
+                });
+
+                toc.appendChild(wrapper);
+            });
+        }
+
+        function buildPractical(practical) {
+            const section = document.createElement("section");
+            section.className = "practical";
+            section.id = "practical-" + practical.id;
+            section.dataset.search = [
+                practical.id,
+                practical.title,
+                practical.aim,
+                practical.note,
+                practical.blocks.map(block => block.label + " " + block.code).join(" ")
+            ].join(" ").toLowerCase();
+
+            const head = document.createElement("div");
+            head.className = "p-head";
+            head.innerHTML =
+                '<span class="p-num">' + pad(practical.id) + "</span>" +
+                '<div class="p-head-content">' +
+                    "<h2>" + practical.title + "</h2>" +
+                    '<p class="p-aim">' + practical.aim + "</p>" +
+                "</div>";
+            section.appendChild(head);
+
+            const actions = document.createElement("div");
+            actions.className = "p-actions";
+
+            const copyFullButton = document.createElement("button");
+            copyFullButton.type = "button";
+            copyFullButton.className = "copy-full-btn";
+            copyFullButton.innerHTML =
+                '<i data-lucide="copy" size="13"></i><span>Copy complete practical</span>';
+            copyFullButton.addEventListener("click", (event) => {
+                copyText(buildCompleteScript(practical), event.currentTarget);
+            });
+
+            const actionNote = document.createElement("span");
+            actionNote.className = "p-action-note";
+            actionNote.textContent = "schema + sample data included";
+
+            actions.appendChild(copyFullButton);
+            actions.appendChild(actionNote);
+            head.querySelector(".p-head-content").appendChild(actions);
+
+            const body = document.createElement("div");
+            body.className = "p-body";
+
+            if (practical.intro) {
+                const intro = document.createElement("p");
+                intro.className = "p-note";
+                intro.style.marginTop = "0";
+                intro.innerHTML = practical.intro;
+                body.appendChild(intro);
+            }
+
+            practical.blocks.forEach(block => {
+                const wrapper = document.createElement("div");
+                wrapper.className = "block";
+
+                const card = document.createElement("div");
+                card.className = "code-card" + (block.lang === "none" ? " diagram" : "");
+
+                const top = document.createElement("div");
+                top.className = "code-top";
+                top.innerHTML =
+                    '<span class="code-file">' + block.file + "</span>" +
+                    '<button class="copy-btn" type="button">' +
+                        '<i data-lucide="copy" size="13"></i><span>Copy</span>' +
+                    "</button>";
+
+                const pre = document.createElement("pre");
+                const code = document.createElement("code");
+                code.className = block.lang === "none" ? "" : "language-" + block.lang;
+                code.textContent = block.code;
+                pre.appendChild(code);
+                card.appendChild(top);
+                card.appendChild(pre);
+                wrapper.appendChild(card);
+                body.appendChild(wrapper);
+
+                top.querySelector(".copy-btn").addEventListener("click", (event) => {
+                    copyText(block.code, event.currentTarget);
+                });
+            });
+
+            if (practical.relations) {
+                const relations = document.createElement("div");
+                relations.className = "relations";
+                practical.relations.forEach(([name, text]) => {
+                    const row = document.createElement("div");
+                    row.className = "relation";
+                    row.innerHTML = "<b>" + name + "</b><span>" + text + "</span>";
+                    relations.appendChild(row);
+                });
+                body.appendChild(relations);
+            }
+
+            if (practical.note) {
+                const note = document.createElement("p");
+                note.className = "p-note";
+                note.innerHTML = practical.note;
+                body.appendChild(note);
+            }
+
+            section.appendChild(body);
+            return section;
+        }
+
+        function renderPracticals() {
+            const container = document.getElementById("practicals");
+            practicals.forEach(practical => {
+                container.appendChild(buildPractical(practical));
+            });
+        }
+
+        function buildMobileJump() {
+            const select = document.getElementById("mobile-jump");
+
+            const connectOption = document.createElement("option");
+            connectOption.value = "connect";
+            connectOption.textContent = "Database connection";
+            select.appendChild(connectOption);
+
+            practicals.forEach(practical => {
+                const option = document.createElement("option");
+                option.value = "practical-" + practical.id;
+                option.textContent = pad(practical.id) + " · " + practical.short;
+                select.appendChild(option);
+            });
+
+            select.addEventListener("change", () => {
+                const target = document.getElementById(select.value);
+                if (target) target.scrollIntoView();
+            });
+        }
+
+        /* ------------------------------------------------------------------
+           Search and scrollspy
+           ------------------------------------------------------------------ */
+        function setupSearch() {
+            const input = document.getElementById("practical-search");
+            const empty = document.getElementById("empty-state");
+
+            input.addEventListener("input", () => {
+                const query = input.value.trim().toLowerCase();
+                let visible = 0;
+
+                document.querySelectorAll(".practical").forEach(section => {
+                    const match = !query || section.dataset.search.includes(query);
+                    section.hidden = !match;
+                    if (match) visible++;
+                });
+
+                const connectSection = document.getElementById("connect");
+                const connectMatch = !query ||
+                    connectSection.dataset.search.includes(query);
+                connectSection.hidden = !connectMatch;
+                if (connectMatch) visible++;
+
+                document.querySelectorAll(".toc-group").forEach(group => {
+                    const links = group.querySelectorAll(".toc-link");
+                    let shown = 0;
+                    links.forEach(link => {
+                        const target = document.getElementById(link.dataset.target);
+                        const match = !query || !target.hidden;
+                        link.hidden = !match;
+                        if (match) shown++;
+                    });
+                    group.hidden = shown === 0;
+                });
+
+                empty.style.display = visible === 0 ? "block" : "none";
+            });
+        }
+
+        function setupScrollspy() {
+            const links = Array.from(document.querySelectorAll(".toc-link"));
+            const sections = links
+                .map(link => document.getElementById(link.dataset.target))
+                .filter(Boolean);
+
+            let ticking = false;
+
+            function update() {
+                const offset = 120;
+                let active = sections[0];
+
+                sections.forEach(section => {
+                    if (section.getBoundingClientRect().top <= offset) {
+                        active = section;
+                    }
+                });
+
+                links.forEach(link => {
+                    link.classList.toggle("active", link.dataset.target === active.id);
+                });
+
+                ticking = false;
+            }
+
+            window.addEventListener("scroll", () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(update);
+                    ticking = true;
+                }
+            }, { passive: true });
+
+            update();
+        }
+
+        /* ------------------------------------------------------------------
+           Init
+           ------------------------------------------------------------------ */
+        document.addEventListener("DOMContentLoaded", () => {
+            buildToc();
+            renderPracticals();
+            renderConnectionTabs();
+            buildMobileJump();
+            setupSearch();
+            setupScrollspy();
+
+            ["copy-all", "copy-all-bottom"].forEach(id => {
+                const button = document.getElementById(id);
+                if (button) {
+                    button.addEventListener("click", (event) => {
+                        copyText(buildAllScript(), event.currentTarget);
+                    });
+                }
+            });
+
+            if (window.lucide) lucide.createIcons();
+
+            if (window.Prism) {
+                document.querySelectorAll("#practicals code[class*='language-']").forEach(code => {
+                    Prism.highlightElement(code);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
